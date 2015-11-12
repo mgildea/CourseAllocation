@@ -1,0 +1,6 @@
+﻿@model String
+
+<div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+    @Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, new { @class = "form-control", @placeholder = ViewData.ModelMetadata.Watermark })
+</div>

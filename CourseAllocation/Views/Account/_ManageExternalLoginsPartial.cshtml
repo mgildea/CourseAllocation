@@ -1,0 +1,58 @@
+﻿@using CourseAllocation.ViewModels
+@model IEnumerable<ExternalLoginViewModel>
+
+
+
+
+<h4>External sign in services.</h4>
+<hr />
+
+<div id="socialLoginList">
+
+    @foreach (ExternalLoginViewModel m in Model)
+    {
+
+        <p>
+            @using (Html.BeginForm(null, "Account", new { ReturnUrl = Url.Action("Manage") }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("loginProvider", m.LoginProvider.AuthenticationType)
+
+                if (m.Account != null)
+                {
+                    @Html.Hidden("providerKey", m.Account.ProviderKey)
+
+                    <!-- Split button -->
+                    <div class="btn-group btn-block">
+                        <button type="submit" class="btn btn-block btn-social btn-@m.LoginProvider.AuthenticationType.ToLower()" name="LinkLogin" value="LinkLogin" title="Log in using your @m.LoginProvider.Caption account">
+                            <i class="fa fa-@m.LoginProvider.AuthenticationType.ToLower()"></i>
+                        </button>
+                        <button type="button" class="btn btn-@m.LoginProvider.AuthenticationType.ToLower() dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>
+                                <button type="submit" class="hidden" id="@(m.LoginProvider.AuthenticationType + "Submit")" name="Disassociate" value="Disassociate"></button>
+                                <a href="javascript:document.getElementById('@(m.LoginProvider.AuthenticationType + "Submit")').click()">Disassociate</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+
+                    <button type="submit" class="btn btn-block btn-social btn-@m.LoginProvider.AuthenticationType.ToLower()" name="LinkLogin" value="LinkLogin" title="Log in using your @m.LoginProvider.Caption account">
+                        <i class="fa fa-@m.LoginProvider.AuthenticationType.ToLower()"></i>
+                        Link with @m.LoginProvider.AuthenticationType
+                    </button>
+                }
+
+            }
+
+        </p>
+    }
+
+
+
+</div>

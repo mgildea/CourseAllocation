@@ -1,0 +1,15 @@
+﻿@using CourseAllocation.Models
+
+@model List<StatusMessage>
+
+@if(Model != null)
+{
+    foreach(StatusMessage message in Model )
+    {
+        <div class="alert alert-dismissable @message.CssClass">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @message.Message
+        </div> 
+    }
+    <div class="clearfix"></div>
+}

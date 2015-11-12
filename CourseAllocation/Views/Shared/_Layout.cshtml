@@ -1,0 +1,35 @@
+﻿@using CourseAllocation.Models;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body>
+    <div id="page-wrap">
+        @Html.Partial("_NavBar")
+
+        @if (TempData["StatusMessages"] != null)
+        {
+            @Html.Partial("_StatusMessagesPartial", (List<StatusMessage>)TempData["StatusMessages"])
+        }
+        <div class="container body-content">
+        
+
+            @RenderBody()
+
+        </div>
+        @*<hr />*@
+    </div>
+    @Html.Partial("_Footer")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

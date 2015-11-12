@@ -1,0 +1,162 @@
+﻿@using CourseAllocation.ViewModels
+
+@{
+    Layout = "_LandingLayout.cshtml";
+}
+
+
+    <div class="intro-header" id="no-spy-first">
+        <div class="container">
+            <div class="row">
+               @*<div class="col-md-8">
+        <div class="intro-message">
+            <h1>CS6310 Project 4</h1>
+            <h3>Fall 2015</h3>
+        </div>
+    </div>*@ 
+
+                @if (!Request.IsAuthenticated)
+                {
+                    <div class="visible-xs col-xs-3"></div>
+                    <div class="col-md-offset-8 col-md-4 col-sm-offset-3 col-sm-6 col-xs-6">
+
+                        @Html.Partial("_LoginPanelPartial", new LoginViewModel())
+
+
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.intro-header -->
+
+<div id="Team">
+    <div class="content-section-a" >
+        <div class="container">
+
+            <h2> Team California</h2>
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="mailto:jborges9@gatech.edu">Josh Borges</a></h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <img src="~/Images/jborges9.jpg" alt="Matt Gildea" class="img-circle img-responsive center-block">
+                            <p>jborges</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="mailto:agentry7@gatech.edu">Adam Gentry</a></h3>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/Images/agentry7.jpg" alt="Matt Gildea" class="img-circle img-responsive center-block">
+                            <p>agentry7</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="mailto:mgildea3@gatech.edu">Matt Gildea</a></h3>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/Images/mgildea3.jpg" alt="Matt Gildea" class="img-circle img-responsive center-block">
+                            <p>mgildea3</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="mailto:jguo85@gatech.edu">Jingyu Guo</a></h3>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/Images/jguo85.jpg" alt="Matt Gildea" class="img-circle img-responsive center-block">
+                            <p>jguo85</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-b -->
+</div>
+
+<div id="ReadMe">
+    <div class="content-section-b">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">
+                        3D Device Mockups
+                        <br>by PSDCovers
+                    </h2>
+                    <p class="lead">Turn your 2D designs into high quality, 3D product shots in seconds using free Photoshop actions by PSDCovers! <a target="_blank" href="http://www.psdcovers.com/">Visit their website</a> to download some of their awesome, free photoshop actions!</p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img class="img-responsive" src="Images/doge.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-a -->
+</div>
+   @*<div class="content-section-a">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">
+                        Google Web Fonts and
+                        <br>Font Awesome Icons
+                    </h2>
+                    <p class="lead">This template features the 'Lato' font, part of the <a target="_blank" href="http://www.google.com/fonts">Google Web Font library</a>, as well as <a target="_blank" href="http://fontawesome.io">icons from Font Awesome</a>.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="Images/phones.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-a -->
+    <div class="banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Connect to Start Bootstrap:</h2>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                        <li>
+                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.banner -->
+*@

@@ -229,3 +229,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+CourseAllocation/ConnectionStrings.config
+CourseAllocation/ConnectionStrings.Debug.config
+CourseAllocation/ConnectionStrings.Release.config
+CourseAllocation/PrivateSettings.config
+CourseAllocation/PrivateSettings.Debug.config
+CourseAllocation/PrivateSettings.Release.config
