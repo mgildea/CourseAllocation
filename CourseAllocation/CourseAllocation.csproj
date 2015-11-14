@@ -48,6 +48,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Elmah.MVC.2.1.1\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
+    <Reference Include="Gurobi65.NET">
+      <HintPath>..\..\..\..\..\..\gurobi650\win64\bin\Gurobi65.NET.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -216,6 +219,13 @@
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="Optimizer\Optimize.aspx.cs">
+      <DependentUpon>Optimize.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Optimizer\Optimize.aspx.designer.cs">
+      <DependentUpon>Optimize.aspx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\Constant.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
@@ -252,6 +262,7 @@
     <Content Include="obj\Debug\CourseAllocation.csproj.FileListAbsolute.txt" />
     <Content Include="obj\Debug\CourseAllocation.dll" />
     <Content Include="obj\Debug\CourseAllocation.pdb" />
+    <Content Include="Optimizer\Optimize.aspx" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\fontawesome-webfont.eot" />
@@ -287,15 +298,12 @@
     </Content>
     <Content Include="PrivateSettings.Release.config">
       <DependentUpon>PrivateSettings.config</DependentUpon>
-    </Content>    
-   
-
+    </Content>
     <Content Include="obj\Debug\6310.csproj.GenerateResource.Cache" />
     <Content Include="obj\Debug\6310.csprojResolveAssemblyReference.cache" />
     <Content Include="obj\Debug\CourseAllocation.csproj.GenerateResource.Cache" />
     <Content Include="obj\Debug\CourseAllocation.csprojResolveAssemblyReference.cache" />
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-
     <None Include="Properties\PublishProfiles\6310.gatechprojects.com - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -374,7 +382,6 @@
     <EmbeddedResource Include="Migrations\201511112341464_courserequirement.resx">
       <DependentUpon>201511112341464_courserequirement.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="obj\Debug\.Migrations.init.resources" />
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
   <PropertyGroup>
