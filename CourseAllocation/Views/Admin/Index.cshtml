@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewBag.Title = "Administration";
+}
+
+
+<h2>Administration</h2>
+
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active pull-right"><a data-target="#semesters" data-toggle="tab">Semesters</a></li>
+    <li class="pull-right"><a data-target="#courses" data-toggle="tab">Courses</a></li>
+    <li class="pull-right"><a data-target="#courseSemesters" data-toggle="tab">Course Offerings</a></li>
+    <li class="pull-right"><a data-target="#students" data-toggle="tab">Students</a></li>
+    <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab">Student Courses</a></li>
+</ul>
+
+
+<div class="tab-content">
+
+    <div class="tab-pane fade in active" id="semesters">
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3 table-responsive">
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Semester</th>
+                            <th>Year</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: Semesters.Records()">
+                        <tr>
+                            <td data-bind="text: Type"></td>
+                            <td data-bind="text: Year"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="courses">
+        <div class="tab-pane fade in active" id="semesters">
+
+            <div class="row">
+                <div class="col-md-12 table-responsive">
+
+                    
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Number</th>
+                                <th>Title</th>
+                                <th>Foundational</th>
+                                <th>Prerequisites</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td ><input type="text" class="form-control" placeholder="Number" /></td>
+                                <td ><input type="text" class="form-control" placeholder="Title" /></td>
+                                <td ><input type="checkbox"></td>
+                                <td>
+                                <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
+                         <!--      <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
+                              -->   </td>
+                            </tr>
+                        </tbody>
+                        <tbody data-bind="foreach: Courses.Records()">
+                         
+                            <tr>
+                                <td data-bind="text: Number"></td>
+                                <td data-bind="text: Name"></td>
+                                <td data-bind="text: IsFoundational"></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="tab-pane fade" id="courseSemesters">
+        course semesters
+
+    </div>
+
+    <div class="tab-pane fade" id="students">
+        <div>
+            students
+
+
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="studentCourses">
+        <div>
+            student courses
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+    function CoursesViewModel() {
+        var self = this;
+
+        self.Records = ko.observableArray();
+
+        self.NewPrereqs = ko.observableArray();
+
+        self.Query = function () {
+            $.getJSON("/Api/Courses", function (data) {
+                ko.utils.arrayForEach(data, function (item) {
+                    self.Records.push(item);
+                    
+                });
+            });
+        }
+    }
+
+
+    function SemestersViewModel() {
+        var self = this;
+
+        self._records = ko.observableArray();
+
+        self.Records = ko.computed(function () {
+            return self._records().sort(function (left, right) {
+
+                if (left.Year == right.Year)
+                    return left.Type == right.Type ? 0 : (left.Type < right.Type ? -1 : 1);
+                else
+                    return left.Year == right.Year ? 0 : (left.Year < right.Year ? -1 : 1);
+            });
+        });
+
+
+        self.Query = function () {
+            $.getJSON("/Api/Semesters", function (data) {
+                ko.utils.arrayForEach(data, function (item) {
+                    self._records.push(item);
+                });
+            });
+        }
+
+    }
+
+    function ViewModel() {
+        var self = this;
+
+        self.Semesters = new SemestersViewModel();
+        self.Semesters.Query();
+
+        self.Courses = new CoursesViewModel();
+        self.Courses.Query();
+
+
+    }
+
+
+    ko.applyBindings(ViewModel);
+</script>
+

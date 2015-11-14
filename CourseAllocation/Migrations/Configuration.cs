@@ -108,7 +108,7 @@ namespace CourseAllocation.Migrations
                             Name = "Computing Systems - Electives",
                             RequiredUnits = 9,
                             Courses = context.Courses.Where(m => (new string[] { "CS 6035", "CS 6310", "CS 6340" }).Contains(m.Number)).ToList()
-                           
+
                         }
                     }
 
@@ -205,6 +205,15 @@ namespace CourseAllocation.Migrations
             SetCSoncentration(context);
             SetIIConcentration(context);
 
+            for (int i = 2016; i < 2021; i++)
+            {
+                context.Semesters.AddOrUpdate(
+                    m => new { m.Year, m.Type },
+                    new Semester { Type = SemesterType.SPRING, Year = i },
+                    new Semester { Type = SemesterType.SUMMER, Year = i },
+                    new Semester { Type = SemesterType.FALL, Year = i }
+                    );
+            }
 
 
 

@@ -1,4 +1,4 @@
-﻿@using CourseAllocation.Models;
+﻿@using CourseAllocation.Models
 
 <!DOCTYPE html>
 <html>
@@ -8,6 +8,10 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/bootstrap")
 
 </head>
 <body>
@@ -19,7 +23,7 @@
             @Html.Partial("_StatusMessagesPartial", (List<StatusMessage>)TempData["StatusMessages"])
         }
         <div class="container body-content">
-        
+
 
             @RenderBody()
 
@@ -28,8 +32,8 @@
     </div>
     @Html.Partial("_Footer")
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+
+   
     @RenderSection("scripts", required: false)
 </body>
 </html>
