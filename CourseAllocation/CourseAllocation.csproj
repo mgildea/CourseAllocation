@@ -216,6 +216,10 @@
     <Compile Include="Migrations\201511140241364_semesters.Designer.cs">
       <DependentUpon>201511140241364_semesters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511142337456_gatechid.cs" />
+    <Compile Include="Migrations\201511142337456_gatechid.Designer.cs">
+      <DependentUpon>201511142337456_gatechid.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
@@ -446,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511140241364_semesters.resx">
       <DependentUpon>201511140241364_semesters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511142337456_gatechid.resx">
+      <DependentUpon>201511142337456_gatechid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\.Migrations.init.resources" />
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />

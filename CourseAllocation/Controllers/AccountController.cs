@@ -102,26 +102,38 @@ namespace CourseAllocation.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            using (var ctx = new ApplicationDbContext())
             {
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
-                IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    if (!user.EmailConfirmed)
-                    {
-                        return await SendAccountConfirmationEmail(user);
-                    }
-                    
-                    await SignInAsync(user, isPersistent: false);
-
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    AddErrors(result);
+                if(ctx.Users.Where(m => m.GaTechId == model.GaTechId).Any())
+                { 
+                    ModelState.AddModelError("DuplicateGaTechId", "The Ga Tech ID already exists in the system.");
                 }
             }
+
+
+                if (ModelState.IsValid)
+                {
+
+
+
+                    var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, GaTechId = model.GaTechId };
+                    IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        if (!user.EmailConfirmed)
+                        {
+                            return await SendAccountConfirmationEmail(user);
+                        }
+
+                        await SignInAsync(user, isPersistent: false);
+
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                    }
+                }
 
             // If we got this far, something failed, redisplay form
             return View(model);

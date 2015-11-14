@@ -57,6 +57,7 @@ namespace CourseAllocation.ViewModels
         [Display(Name = "Email", Prompt = "Email")]
         public string Email { get; set; }
 
+
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Password", Prompt = "Password")]
@@ -72,6 +73,10 @@ namespace CourseAllocation.ViewModels
         [EmailAddress]
         [Display(Name = "Email", Prompt = "Email")]
         public string Email { get; set; }
+
+        [Required]
+        [Display(Name ="GA Tech ID", Prompt = "Ga Tech ID")]
+        public string GaTechId { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
