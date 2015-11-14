@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data.Entity;
+using CourseAllocation.Models;
 
 namespace CourseAllocation.Models
 {
