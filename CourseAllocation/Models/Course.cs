@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace CourseAllocation.Models
 {
@@ -25,8 +26,13 @@ namespace CourseAllocation.Models
         public bool IsFoundational { get; set; }
 
         public virtual ICollection<Course> Prerequisites { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<Course> PrerequisiteFor { get; set; }
 
+
+
+        [JsonIgnore]
         public virtual ICollection<Requirement> Requirements { get; set; }
     }
 }
