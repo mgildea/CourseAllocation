@@ -48,6 +48,12 @@ namespace CourseAllocation
 
   );
 
+            config.Routes.MapHttpRoute(
+      name: "Optimizer",
+      routeTemplate: "Api/Optimizer",
+      defaults: new { controller = "OptimizeApi", action = "Optimize" }
+
+  );
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
