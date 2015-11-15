@@ -49,7 +49,8 @@
       <HintPath>..\packages\Elmah.MVC.2.1.1\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Gurobi65.NET">
-      <HintPath>..\..\..\..\..\..\gurobi650\win64\bin\Gurobi65.NET.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\gurobi650\win64\bin\Gurobi65.NET.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="RestSharp, Version=104.4.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -222,6 +223,10 @@
     <Compile Include="Migrations\201511142337456_gatechid.Designer.cs">
       <DependentUpon>201511142337456_gatechid.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511150024453_preferences.cs" />
+    <Compile Include="Migrations\201511150024453_preferences.Designer.cs">
+      <DependentUpon>201511150024453_preferences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
@@ -229,6 +234,7 @@
     <Compile Include="Models\Requirement.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Semester.cs" />
+    <Compile Include="Models\StudentPreference.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="obj\Debug\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
@@ -453,12 +459,13 @@
     <EmbeddedResource Include="Migrations\201511140241364_semesters.resx">
       <DependentUpon>201511140241364_semesters.cs</DependentUpon>
     </EmbeddedResource>
-
     <EmbeddedResource Include="Migrations\201511142337456_gatechid.resx">
       <DependentUpon>201511142337456_gatechid.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511150024453_preferences.resx">
+      <DependentUpon>201511150024453_preferences.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\.Migrations.init.resources" />
-
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
   <PropertyGroup>

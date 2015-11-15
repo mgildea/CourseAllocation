@@ -30,6 +30,8 @@ namespace CourseAllocation.Models
         [JsonIgnore]
         public virtual ICollection<Course> PrerequisiteFor { get; set; }
 
+        [JsonIgnore]
+        public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
 
         [JsonIgnore]

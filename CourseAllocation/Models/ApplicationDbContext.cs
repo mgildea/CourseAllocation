@@ -25,7 +25,8 @@ namespace CourseAllocation.Models
         public DbSet<Concentration> Concentrations { get; set; }
         
 
-       
+       public DbSet<StudentPreference> StudentPreferences { get; set; }
+
         public DbSet<Course> Courses { get; set; }
 
         public DbSet<Semester> Semesters { get; set; }
