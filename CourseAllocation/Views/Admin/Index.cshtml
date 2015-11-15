@@ -6,6 +6,7 @@
 
 <h2>Administration</h2>
 
+<button class="btn btn-default pull-left" type="button" data-bind="click: optimize">Optimize</button>
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="active pull-right"><a data-target="#semesters" data-toggle="tab">Semesters</a></li>
@@ -48,7 +49,7 @@
             <div class="row">
                 <div class="col-md-12 table-responsive">
 
-                    
+
 
                     <table class="table table-striped">
                         <thead>
@@ -61,17 +62,18 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td ><input type="text" class="form-control" placeholder="Number" /></td>
-                                <td ><input type="text" class="form-control" placeholder="Title" /></td>
-                                <td ><input type="checkbox"></td>
+                                <td><input type="text" class="form-control" placeholder="Number" /></td>
+                                <td><input type="text" class="form-control" placeholder="Title" /></td>
+                                <td><input type="checkbox"></td>
                                 <td>
-                                <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
-                         <!--      <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
-                              -->   </td>
+                                    <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
+                                    <!--      <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
+                                         -->
+                                </td>
                             </tr>
                         </tbody>
                         <tbody data-bind="foreach: Courses.Records()">
-                         
+
                             <tr>
                                 <td data-bind="text: Number"></td>
                                 <td data-bind="text: Name"></td>
@@ -125,7 +127,7 @@
             $.getJSON("/Api/Courses", function (data) {
                 ko.utils.arrayForEach(data, function (item) {
                     self.Records.push(item);
-                    
+
                 });
             });
         }
@@ -167,6 +169,16 @@
         self.Courses = new CoursesViewModel();
         self.Courses.Query();
 
+
+        self.optimize = function () {
+            $.ajax({
+                url: "/Api/Optimizer",
+                method: "GET",
+                success: function (data) {
+                    alert("Test");
+                }
+            });
+        }
 
     }
 
