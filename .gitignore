@@ -235,3 +235,5 @@ CourseAllocation/ConnectionStrings.Release.config
 CourseAllocation/PrivateSettings.config
 CourseAllocation/PrivateSettings.Debug.config
 CourseAllocation/PrivateSettings.Release.config
+.vs/config/applicationhost.config
+.vs/config/applicationhost.config

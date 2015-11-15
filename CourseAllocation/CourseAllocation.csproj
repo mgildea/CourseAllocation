@@ -465,7 +465,6 @@
     <EmbeddedResource Include="Migrations\201511150024453_preferences.resx">
       <DependentUpon>201511150024453_preferences.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="obj\Debug\.Migrations.init.resources" />
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
   <PropertyGroup>
