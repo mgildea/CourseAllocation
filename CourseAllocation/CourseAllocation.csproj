@@ -453,13 +453,12 @@
     <EmbeddedResource Include="Migrations\201511140241364_semesters.resx">
       <DependentUpon>201511140241364_semesters.cs</DependentUpon>
     </EmbeddedResource>
-<<<<<<< HEAD
+
     <EmbeddedResource Include="Migrations\201511142337456_gatechid.resx">
       <DependentUpon>201511142337456_gatechid.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\.Migrations.init.resources" />
-=======
->>>>>>> origin/master
+
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
   <PropertyGroup>
