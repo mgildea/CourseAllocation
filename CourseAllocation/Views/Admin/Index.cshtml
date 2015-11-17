@@ -66,7 +66,8 @@
                                 <td><input type="text" class="form-control" placeholder="Title" data-bind="value: Courses.NewName"/></td>
                                 <td><input type="checkbox" data-bind="checked: Courses.NewIsFoundational"></td>
                                 <td>
-                                    <i class="fa fa-floppy-o fa-clickable pull-right" data-bind="click:Courses.Save"></i>
+                                    <a href="#" class="close" data-bind="click:Courses.Save"><i class="fa fa-floppy-o pull-right"></i></a>
+                                    
 
                                     <select class="form-control" data-bind="options: Courses.Records(), selectedOptions: Courses.NewPrereqs(), optionsText: 'Name', optionsValue: 'ID'" multiple></select>
 
@@ -113,8 +114,8 @@
                             <td colspan="2">
                             <select class="form-control" data-bind="value: CourseSemesters.NewSemester, options: Semesters.Records(), optionsText: function(item) { return item.Type + ' ' + item.Year} , optionsValue: function(item) { return { Type : item.TypeValue, Year : item.Year} }, optionsCaption: 'Select Semester'"></select></td>
                             <td colspan="2">
-                                <i class="fa fa-floppy-o fa-clickable pull-right" data-bind="click:CourseSemesters.Save"></i>
-                            <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select></td>
+                                <a href="#" class="close" data-bind="click:CourseSemesters.Save"><i class="fa fa-floppy-o pull-right"></i></a>
+                                 <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select></td>
                         </tr>
                     </tbody>
                     <tbody data-bind="foreach: CourseSemesters.Records()">

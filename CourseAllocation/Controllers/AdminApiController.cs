@@ -18,9 +18,10 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                if(ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year).Any())
+                if(courseSemester == null || courseSemester.Course == null || courseSemester.Semester == null ||
+                    ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year).Any())
                 {
-                    //record already exists
+                    //record already exists or data incomplete
                     return null;
                 }
 
@@ -64,7 +65,7 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                if (ctx.Courses.Where(m => m.Number == course.Number).Any())
+                if (course.Number == null || course.Name == null || ctx.Courses.Where(m => m.Number == course.Number).Any())
                 {
                     //record already exists
                     return null;
