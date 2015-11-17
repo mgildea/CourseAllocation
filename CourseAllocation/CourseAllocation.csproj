@@ -321,6 +321,7 @@
     <Content Include="obj\Debug\CourseAllocation.csprojResolveAssemblyReference.cache" />
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="Content\bootstrap-select.css.map" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
     <None Include="Properties\PublishProfiles\6310.gatechprojects.com - Web Deploy.pubxml" />
     <Content Include="Scripts\bootstrap-select.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

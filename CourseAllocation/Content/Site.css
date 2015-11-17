@@ -120,7 +120,6 @@ textarea {
 }
 
 
-.fa-clickable:hover{
-    cursor:pointer;
-
+.tooltip {
+    min-width : 200px;
 }

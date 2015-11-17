@@ -81,6 +81,29 @@ namespace CourseAllocation.Controllers
             
         }
 
+        [HttpPost]
+        public IEnumerable<SemesterViewModel> Year()
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                int newYear = ctx.Semesters.Max(m => m.Year) + 1;
+
+                List<Semester> newSemesters = new List<Semester>();
+
+                foreach (SemesterType type in Enum.GetValues(typeof(SemesterType)))
+                {
+                    newSemesters.Add(new Semester() { Type = type, Year = newYear });
+                }
+
+                ctx.Semesters.AddRange(newSemesters);
+
+                ctx.SaveChanges();
+
+                return newSemesters.Select(m => new SemesterViewModel(m));
+            }
+            
+        }
+
         [HttpGet]
         public IEnumerable<SemesterViewModel> Semesters()
         {

@@ -63,6 +63,14 @@ namespace CourseAllocation
   );
 
 
+            config.Routes.MapHttpRoute(
+name: "AddYear",
+routeTemplate: "Api/Year",
+defaults: new { controller = "AdminApi", action = "Year" }
+
+);
+
+
 
             config.Routes.MapHttpRoute(
       name: "Optimizer",

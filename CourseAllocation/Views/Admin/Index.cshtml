@@ -20,15 +20,17 @@
 <div class="tab-content">
 
     <div class="tab-pane fade in active" id="semesters">
-
+      
         <div class="row">
             <div class="col-md-6 col-md-offset-3 table-responsive">
+               
 
                 <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Semester</th>
-                            <th>Year</th>
+                            <th>Year <a href="#" class="close pull-right" data-bind="click:Semesters.Add" data-toggle="tooltip" data-placement="right" title="Add Academic Year"><i class="fa fa-calendar-plus-o"></i></a>
+</th>
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: Semesters.Records()">
@@ -39,6 +41,7 @@
                     </tbody>
                 </table>
             </div>
+        
         </div>
     </div>
 
@@ -49,6 +52,7 @@
             <div class="row">
                 <div class="col-md-12 table-responsive">
 
+                   
 
 
                     <table class="table table-striped">
@@ -66,7 +70,7 @@
                                 <td><input type="text" class="form-control" placeholder="Title" data-bind="value: Courses.NewName"/></td>
                                 <td><input type="checkbox" data-bind="checked: Courses.NewIsFoundational"></td>
                                 <td>
-                                    <a href="#" class="close" data-bind="click:Courses.Save"><i class="fa fa-floppy-o pull-right"></i></a>
+                                    <a href="#" class="close pull-right" data-bind="click:Courses.Save"><i class="fa fa-floppy-o"></i></a>
                                     
 
                                     <select class="form-control" data-bind="options: Courses.Records(), selectedOptions: Courses.NewPrereqs(), optionsText: 'Name', optionsValue: 'ID'" multiple></select>
@@ -114,7 +118,7 @@
                             <td colspan="2">
                             <select class="form-control" data-bind="value: CourseSemesters.NewSemester, options: Semesters.Records(), optionsText: function(item) { return item.Type + ' ' + item.Year} , optionsValue: function(item) { return { Type : item.TypeValue, Year : item.Year} }, optionsCaption: 'Select Semester'"></select></td>
                             <td colspan="2">
-                                <a href="#" class="close" data-bind="click:CourseSemesters.Save"><i class="fa fa-floppy-o pull-right"></i></a>
+                                <a href="#" class="close pull-right" data-bind="click:CourseSemesters.Save"><i class="fa fa-floppy-o"></i></a>
                                  <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select></td>
                         </tr>
                     </tbody>
@@ -295,6 +299,25 @@
             });
         });
 
+        self.Add = function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Api/Year",
+                    data: null,
+                    success: function (data) {
+                        ko.utils.arrayForEach(data, function (item) {
+                            self._records.push(item);
+                        });
+                     
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert("some error");
+                    },
+                    complete: function (data) {
+                       
+                    }
+                });
+        };
 
         self.Query = function () {
             $.getJSON("/Api/Semesters", function (data) {
@@ -333,5 +356,9 @@
 
 
     ko.applyBindings(ViewModel);
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
 </script>
 
