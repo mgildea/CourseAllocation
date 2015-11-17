@@ -14,7 +14,7 @@ namespace CourseAllocation.Controllers
         [HttpGet]
         public object Optimize()
         {
-            using (var dbConn = new ApplicationDbContext())
+using (var dbConn = new ApplicationDbContext())
             {
                 var set = dbConn.Semesters.Where(m => m.Year == 2016 ).ToList();
                 foreach (var rec in dbConn.CourseSemesters.ToList())

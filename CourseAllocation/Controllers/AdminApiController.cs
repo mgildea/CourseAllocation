@@ -6,34 +6,87 @@ using System.Net.Http;
 using System.Web.Http;
 using CourseAllocation.Models;
 using System.Data.Entity;
+using CourseAllocation.ViewModels;
 
 namespace CourseAllocation.Controllers
 {
     public class AdminApiController : ApiController
     {
 
-        [HttpGet]
-        public IEnumerable<Course> Courses()
+        [HttpPost]
+        public CourseSemesterViewModel CourseSemester(CourseSemester courseSemester)
         {
-            IEnumerable<Course> courses;
             using (var ctx = new ApplicationDbContext())
             {
-                courses = ctx.Courses.Include(m => m.Prerequisites).ToList();
+                if(ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year).Any())
+                {
+                    //record already exists
+                    return null;
+                }
+
+                courseSemester.Course = ctx.Courses.Find(courseSemester.Course.ID);
+                courseSemester.Semester = ctx.Semesters.Find(courseSemester.Semester.Type, courseSemester.Semester.Year);
+
+                ctx.CourseSemesters.Add(courseSemester);
+                ctx.SaveChanges();
+
+                return new CourseSemesterViewModel(courseSemester);
             }
 
-            return courses;
+          
+
+   
         }
 
         [HttpGet]
-        public IEnumerable<Semester> Semesters()
+        public IEnumerable<CourseSemesterViewModel> CourseSemesters()
         {
-            IEnumerable<Semester> semesters;
             using (var ctx = new ApplicationDbContext())
             {
-                semesters = ctx.Semesters.ToList();
+                return ctx.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).ToList().Select(m => new CourseSemesterViewModel(m));
+            }
+        }
+
+
+        [HttpGet]
+        public IEnumerable<CourseViewModel> Courses()
+        {
+
+            using (var ctx = new ApplicationDbContext())
+            {
+                return ctx.Courses.Include(m => m.Prerequisites).ToList().Select(m => new CourseViewModel(m));
+            }
+        }
+
+
+        [HttpPost]
+        public CourseViewModel Course(Course course)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                if (ctx.Courses.Where(m => m.Number == course.Number).Any())
+                {
+                    //record already exists
+                    return null;
+                   
+                }
+
+                ctx.Courses.Add(course);
+                ctx.SaveChanges();
+
+                return new CourseViewModel(course);
             }
 
-            return semesters;
+            
+        }
+
+        [HttpGet]
+        public IEnumerable<SemesterViewModel> Semesters()
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                return ctx.Semesters.ToList().Select(m => new SemesterViewModel(m));
+            }
         }
     }
 }

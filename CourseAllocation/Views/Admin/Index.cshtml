@@ -4,7 +4,7 @@
 }
 
 
-<h2>Administration</h2>
+<h2 class="underline">Administration</h2>
 
 <button class="btn btn-default pull-left" type="button" data-bind="click: optimize">Optimize</button>
 
@@ -13,7 +13,7 @@
     <li class="pull-right"><a data-target="#courses" data-toggle="tab">Courses</a></li>
     <li class="pull-right"><a data-target="#courseSemesters" data-toggle="tab">Course Offerings</a></li>
     <li class="pull-right"><a data-target="#students" data-toggle="tab">Students</a></li>
-    <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab">Student Courses</a></li>
+    <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab">Student Preferences</a></li>
 </ul>
 
 
@@ -44,7 +44,7 @@
 
 
     <div class="tab-pane fade" id="courses">
-        <div class="tab-pane fade in active" id="semesters">
+   
 
             <div class="row">
                 <div class="col-md-12 table-responsive">
@@ -62,12 +62,18 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><input type="text" class="form-control" placeholder="Number" /></td>
-                                <td><input type="text" class="form-control" placeholder="Title" /></td>
-                                <td><input type="checkbox"></td>
+                                <td><input type="text" class="form-control" placeholder="Number" data-bind="value: Courses.NewNumber" /></td>
+                                <td><input type="text" class="form-control" placeholder="Title" data-bind="value: Courses.NewName"/></td>
+                                <td><input type="checkbox" data-bind="checked: Courses.NewIsFoundational"></td>
                                 <td>
-                                    <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
-                                    <!--      <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
+                                    <i class="fa fa-floppy-o fa-clickable pull-right" data-bind="click:Courses.Save"></i>
+
+                                    <select class="form-control" data-bind="options: Courses.Records(), selectedOptions: Courses.NewPrereqs(), optionsText: 'Name', optionsValue: 'ID'" multiple></select>
+
+                                     <!--<select data-bind="selectPicker: Courses.SelectedRecords, selectPickerOptions: { options: Courses.Records, optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'Please select...' }"></select>
+                                   
+                                     <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
+                                         <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
                                          -->
                                 </td>
                             </tr>
@@ -84,13 +90,45 @@
                     </table>
                 </div>
             </div>
-        </div>
+       
 
     </div>
 
 
     <div class="tab-pane fade" id="courseSemesters">
-        course semesters
+        <div class="row">
+            <div class="col-md-12 table-responsive">
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Semester</th>
+                            <th>Year</th>
+                            <th>Number</th>
+                            <th>Title</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2">
+                            <select class="form-control" data-bind="value: CourseSemesters.NewSemester, options: Semesters.Records(), optionsText: function(item) { return item.Type + ' ' + item.Year} , optionsValue: function(item) { return { Type : item.TypeValue, Year : item.Year} }, optionsCaption: 'Select Semester'"></select></td>
+                            <td colspan="2">
+                                <i class="fa fa-floppy-o fa-clickable pull-right" data-bind="click:CourseSemesters.Save"></i>
+                            <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select></td>
+                        </tr>
+                    </tbody>
+                    <tbody data-bind="foreach: CourseSemesters.Records()">
+
+                        <tr>
+                            <td data-bind="text: Type"></td>
+                            <td  data-bind="text: Year"></td>
+                            <td  data-bind="text: Number"></td>
+                            <td  data-bind="text: Name"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
     </div>
 
@@ -116,17 +154,124 @@
 
 
 <script type="text/javascript">
+
+    function CourseSemestersViewModel() {
+        var self = this;
+
+
+        self.NewSemester = ko.observable('');
+        self.NewCourse = ko.observable('');
+
+        self.Save = function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Api/CourseSemester",
+                data: {
+                    Course: self.NewCourse(),
+                    Semester: self.NewSemester()
+
+                },
+                success: function (data) {
+                    if(data !== null)
+                    self._records.push(data);
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("some error");
+                },
+                complete: function (data) {
+                    self.NewSemester('');
+                    self.NewCourse('');
+
+                }
+            });
+        };
+
+        
+
+
+        self._records = ko.observableArray();
+
+        self.Records = ko.computed(function () {
+            return self._records().sort(function (left, right) {
+
+                if (left.Year == right.Year)
+                {
+                    if (left.Type == right.TypeValue)
+                        return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
+                    else
+                        return left.Type == right.TypeValue ? 0 : (left.TypeValue < right.TypeValue ? -1 : 1);
+                } 
+                else
+                    return left.Year == right.Year ? 0 : (left.Year < right.Year ? -1 : 1);
+            });
+        });
+
+
+        self.Query = function () {
+            $.getJSON("/Api/CourseSemesters", function (data) {
+                ko.utils.arrayForEach(data, function (item) {
+                    self._records.push(item);
+
+                });
+            });
+        }
+    }
+
+
     function CoursesViewModel() {
         var self = this;
 
-        self.Records = ko.observableArray();
+        self._records = ko.observableArray();
 
+        self.Records = ko.computed(function () {
+            return self._records().sort(function (left, right) {
+                return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
+            });
+        });
+
+
+        self.NewNumber = ko.observable("");
+        self.NewName = ko.observable("");
+        self.NewIsFoundational = ko.observable(false);
         self.NewPrereqs = ko.observableArray();
+
+        self.Save = function () {
+
+            $.ajax({
+                type: "POST",
+                url: "/Api/Course",
+                data: {
+                    Number: self.NewNumber(),
+                    Name: self.NewName(),
+                    IsFoundational: self.NewIsFoundational(),
+                    Prerequisites: self.NewPrereqs()
+                },
+                success: function (data) {
+                    if (data !== null)
+                    self._records.push(data);
+                   
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("some error");
+                },
+                complete: function (data) {
+                    self.NewNumber('');
+                    self.NewName('');
+                    self.NewIsFoundational(false);
+                    self.NewPrereqs.removeAll();
+                }
+            });
+
+           
+        };
+
 
         self.Query = function () {
             $.getJSON("/Api/Courses", function (data) {
                 ko.utils.arrayForEach(data, function (item) {
-                    self.Records.push(item);
+                    self._records.push(item);
 
                 });
             });
@@ -143,7 +288,7 @@
             return self._records().sort(function (left, right) {
 
                 if (left.Year == right.Year)
-                    return left.Type == right.Type ? 0 : (left.Type < right.Type ? -1 : 1);
+                    return left.TypeValue == right.TypeValue ? 0 : (left.TypeValue < right.TypeValue ? -1 : 1);
                 else
                     return left.Year == right.Year ? 0 : (left.Year < right.Year ? -1 : 1);
             });
@@ -168,6 +313,9 @@
 
         self.Courses = new CoursesViewModel();
         self.Courses.Query();
+
+        self.CourseSemesters = new CourseSemestersViewModel();
+        self.CourseSemesters.Query();
 
 
         self.optimize = function () {

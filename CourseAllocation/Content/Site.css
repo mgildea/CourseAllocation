@@ -24,9 +24,6 @@ html,body {
 }
 
 
-
-
-
 .center-block {
   display: block;
   margin-left: auto;
@@ -113,4 +110,17 @@ textarea {
 .ignore {
     visibility:hidden;
     width : 0%;
+}
+
+
+.underline {
+    border-bottom : 1px solid #ccc !important;
+    padding-bottom : 2px;
+    margin-bottom: 10px;
+}
+
+
+.fa-clickable:hover{
+    cursor:pointer;
+
 }

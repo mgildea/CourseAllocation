@@ -36,5 +36,11 @@ namespace CourseAllocation.Models
 
         [JsonIgnore]
         public virtual ICollection<Requirement> Requirements { get; set; }
+
+
+        public Course()
+        {
+            Units = 3;
+        }
     }
 }

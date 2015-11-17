@@ -26,11 +26,33 @@ namespace CourseAllocation
 
 
             config.Routes.MapHttpRoute(
+          name: "QueryCourseSemesters",
+          routeTemplate: "Api/CourseSemesters",
+          defaults: new { controller = "AdminApi", action = "CourseSemesters" }
+
+      );
+
+            config.Routes.MapHttpRoute(
+      name: "CourseSemester",
+      routeTemplate: "Api/CourseSemester",
+      defaults: new { controller = "AdminApi", action = "CourseSemester" }
+
+  );
+
+
+            config.Routes.MapHttpRoute(
            name: "QueryCourses",
            routeTemplate: "Api/Courses",
            defaults: new { controller = "AdminApi", action = "Courses" }
 
        );
+
+            config.Routes.MapHttpRoute(
+         name: "Course",
+         routeTemplate: "Api/Course",
+         defaults: new { controller = "AdminApi", action = "Course" }
+
+     );
 
 
             config.Routes.MapHttpRoute(
@@ -41,12 +63,6 @@ namespace CourseAllocation
   );
 
 
-            config.Routes.MapHttpRoute(
-      name: "QueryCourseSemesters",
-      routeTemplate: "Api/CourseSemesters",
-      defaults: new { controller = "AdminApi", action = "Courses" }
-
-  );
 
             config.Routes.MapHttpRoute(
       name: "Optimizer",

@@ -9,9 +9,9 @@ namespace CourseAllocation.Models
 {
     public enum SemesterType
     {
-        SPRING,
-        SUMMER,
-        FALL
+        Spring,
+        Summer,
+        Fall
     }
 
     //public sealed class SemesterType

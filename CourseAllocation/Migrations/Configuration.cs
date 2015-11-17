@@ -209,9 +209,9 @@ namespace CourseAllocation.Migrations
             {
                 context.Semesters.AddOrUpdate(
                     m => new { m.Year, m.Type },
-                    new Semester { Type = SemesterType.SPRING, Year = i },
-                    new Semester { Type = SemesterType.SUMMER, Year = i },
-                    new Semester { Type = SemesterType.FALL, Year = i }
+                    new Semester { Type = SemesterType.Spring, Year = i },
+                    new Semester { Type = SemesterType.Summer, Year = i },
+                    new Semester { Type = SemesterType.Fall, Year = i }
                     );
             }
 
