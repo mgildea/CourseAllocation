@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using CourseAllocation.Models;
@@ -8,49 +9,26 @@ namespace CourseAllocation.Controllers
 {
     public class OptimizeApiController : ApiController
     {
+        private StudentPreference[] students;
+        private Course[] courses;
+        private Semester[] sems;
+        private CourseSemester[] crssems;
+
         private GRBLinExpr MAX_COURSES_PER_SEMESTER = new GRBLinExpr(2);
-        public struct Student
-        {
-            public string GATechID;
-            public int prefID;
-            public Course[] PreferedCourses;
-        }
 
         [HttpGet]
         public object Optimize()
         {
-            Student[] students;
-            Course[] courses = GetCourses();
-            Semester[] sems = GetSemesters();
-            CourseSemester[] crssems = GetCourseSemesters();
+            
 
             using (var dbConn = new ApplicationDbContext())
             {
-                var Holder = dbConn.StudentPreferences.Select(m => m.GaTechId).Distinct();
-                students = new Student[Holder.Count()];
-                int i = 0;
-                foreach (string GTID in Holder)
-                {
-                    students[i].GATechID = GTID;
-                    i++;
-                }
-                for (i = 0; i < students.Count(); i++)
-                {
-                    string sname = students[i].GATechID;
-                    students[i].prefID = dbConn.StudentPreferences.Where(m => m.GaTechId == sname).Max(m => m.ID);
-                    int prefID = students[i].prefID;
-
-                    var PrefCourses = dbConn.StudentPreferences.Where(m => m.ID == prefID).Select(m => m.Courses).ToList();
-
-                    students[i].PreferedCourses = new Course[PrefCourses[0].Count];
-                    int c = 0;
-                    foreach (Models.Course crs in PrefCourses[0])
-                    {
-                        students[i].PreferedCourses[c] = crs;
-                        c++;
-                    }
-                }
+                students = dbConn.StudentPreferences.Include(m => m.Courses).ToArray();
+                crssems = GetCourseSemesters(dbConn);
+                courses = crssems.Select(m => m.Course).Distinct().ToArray();
+                sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m=>m.Year).ToArray();
             }
+
             try
             {
                 GRBEnv env = new GRBEnv("mip1.log");
@@ -59,14 +37,13 @@ namespace CourseAllocation.Controllers
 
                 GRBVar[,,] CourseAllocation = new GRBVar[students.Length, courses.Length, sems.Length];
                 GRBVar X = model.AddVar(0, GRB.INFINITY, 0, GRB.INTEGER, "X");
-
                 for (int i = 0; i < students.Length; i++)
                 {
                     for (int j = 0; j < courses.Length; j++)
                     {
                         for (int k = 0; k < sems.Length; k++)
                         {
-                            if (students[i].PreferedCourses.Select(m => m.ID).Contains(courses[j].ID) && (crssems.Select(m => m.Course.ID).Contains(courses[j].ID) && crssems.Select(m => m.Semester.Type).Contains(sems[k].Type)))
+                            if (students[i].Courses.Contains(courses[j]) && (crssems.Select(m => m.Course).Contains(courses[j]) && crssems.Select(m => m.Semester).Contains(sems[k])))
                                 CourseAllocation[i, j, k] = model.AddVar(0, 1, 1, GRB.BINARY, "students." + (i + 1).ToString() + "_Course." + (j + 1).ToString() + "_Semester." + (k + 1).ToString());
                             else
                                 CourseAllocation[i, j, k] = model.AddVar(0, 0, 1, GRB.BINARY, "students." + (i + 1).ToString() + "_Course." + (j + 1).ToString() + "_Semester." + (k + 1).ToString());
@@ -88,7 +65,7 @@ namespace CourseAllocation.Controllers
                 {
                     for (int j = 0; j < courses.Length; j++)
                     {
-                        if (students[i].PreferedCourses.Select(m => m.ID).Contains(courses[j].ID))
+                        if (students[i].Courses.Contains(courses[j]))
                         {
                             constStudentDesiredCourses = new GRBLinExpr();
                             for (int k = 0; k < sems.Length; k++)
@@ -155,7 +132,7 @@ namespace CourseAllocation.Controllers
                 model.SetObjective(minX, GRB.MINIMIZE);
 
                 model.Optimize();
-                //writeResults(StdntCrsSem);
+                writeResults(CourseAllocation, students, courses, sems);
                 double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
 
                 model.Dispose();
@@ -166,50 +143,38 @@ namespace CourseAllocation.Controllers
             {
                 string temp = e.ToString();
             }
-
             return null;
         }
-        private static Course[] GetCourses()
-        {
-            Course[] courses;
-            using (var dbConn = new ApplicationDbContext())
-            {
-                var temp = dbConn.Courses.ToList();
-                courses = new Course[temp.Count];
-                for (int i = 0; i < temp.Count; i++)
-                {
-                    courses[i] = temp[i];
-                }
-            }
-            return courses;
-        }
 
-        private static Semester[] GetSemesters()
+        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems)
         {
-            Semester[] semesters;
-            using (var dbConn = new ApplicationDbContext())
-            {
-                var temp = dbConn.Semesters.OrderBy(m => m.Year).Take(12).ToList();
-                semesters = new Semester[temp.Count];
-                for (int i = 0; i < temp.Count; i++)
-                {
-                    semesters[i] = temp[i];
-                }
+            System.IO.StreamWriter writer = new System.IO.StreamWriter("c:\\output.txt");
+            
+            for (int i = 0; i< students.Length; i++){
+        	    for (int j = 0; j< courses.Length; j++){
+        		    for (int k = 0; k< sems.Length; k++){
+                        try
+                        {
+                            if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
+                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                        }
+                        catch (GRBException e)
+                        {
+                        }
+        		    }
+        	    }
             }
-            return semesters;
+            writer.Close();
         }
-
-        private static CourseSemester[] GetCourseSemesters()
+       
+        private static CourseSemester[] GetCourseSemesters(ApplicationDbContext dbConn)
         {
             CourseSemester[] crssems;
-            using (var dbConn = new ApplicationDbContext())
+            var temp = dbConn.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).ToList();
+            crssems = new CourseSemester[temp.Count];
+            for (int i = 0; i < temp.Count; i++)
             {
-                var temp = dbConn.CourseSemesters.ToList();
-                crssems = new CourseSemester[temp.Count];
-                for (int i = 0; i < temp.Count; i++)
-                {
-                    crssems[i] = temp[i];
-                }
+                crssems[i] = temp[i];
             }
             return crssems;
         }
