@@ -52,10 +52,14 @@ namespace CourseAllocation.ViewModels
 
     public class LoginViewModel
     {
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Email", Prompt = "Email")]
+        //public string Email { get; set; }
+
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "GA Tech ID", Prompt = "Ga Tech ID")]
+        public string GaTechId { get; set; }
 
 
         [Required]
@@ -69,10 +73,10 @@ namespace CourseAllocation.ViewModels
 
     public class RegisterViewModel
     {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; }
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Email", Prompt = "Email")]
+        //public string Email { get; set; }
 
         [Required]
         [Display(Name ="GA Tech ID", Prompt = "Ga Tech ID")]
@@ -92,10 +96,14 @@ namespace CourseAllocation.ViewModels
 
     public class ResetPasswordViewModel
     {
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Email", Prompt = "Email")]
+        //public string Email { get; set; }
+
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "GA Tech ID", Prompt = "Ga Tech ID")]
+        public string GaTechId { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
@@ -113,17 +121,25 @@ namespace CourseAllocation.ViewModels
 
     public class ForgotPasswordViewModel
     {
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Email", Prompt = "Email")]
+        //public string Email { get; set; }
+
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "GA Tech ID", Prompt = "Ga Tech ID")]
+        public string GaTechId { get; set; }
     }
 
     public class ResendConfirmEmailViewModel
     {
+        //[Required]
+        //[EmailAddress]
+        //[Display(Name = "Email", Prompt = "Email")]
+        //public string Email { get; set; }
+
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email", Prompt = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "GA Tech ID", Prompt = "Ga Tech ID")]
+        public string GaTechId { get; set; }
     }
 }

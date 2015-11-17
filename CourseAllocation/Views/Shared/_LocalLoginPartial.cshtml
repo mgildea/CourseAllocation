@@ -1,5 +1,4 @@
 ﻿@model CourseAllocation.ViewModels.LoginViewModel
-
 @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -7,34 +6,37 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <div class="form-group">
 
+
         <div class="col-md-12 col-sm-12">
-            @Html.EditorFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-graduation-cap fa-fw"></i></span>
+                <input type="text" name="GaTechId" class="form-control" placeholder="GA Tech ID" />
+            </div>
+            @Html.ValidationMessageFor(m => m.GaTechId, "", new { @class = "text-danger" })
+            @*@Html.EditorFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })*@
         </div>
     </div>
     <div class="form-group">
-
         <div class="col-md-12 col-sm-12">
             @Html.EditorFor(m => m.Password, new { @class = "form-control" })
             @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
         </div>
     </div>
-  
-        <div class="form-group">
-            <div class="col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-6 col-xs-12">
-                <div class="checkbox">
-                    
-                    @Html.CheckBoxFor(m => m.RememberMe)
-                    <small style="color:black;">@Html.LabelFor(m => m.RememberMe)</small>
-                </div>
 
+    <div class="form-group">
+        <div class="col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-6 col-xs-12">
+            <div class="checkbox">
+
+                @Html.CheckBoxFor(m => m.RememberMe)
+                <small style="color:black;">@Html.LabelFor(m => m.RememberMe)</small>
             </div>
-            <div class="visible-xs clearfix"><br /></div> 
-            <div class="col-md-3 col-sm-5 col-xs-12">
-                <input type="submit" value="Sign in" class="btn btn-default" />
-            </div>
-
-
         </div>
-    
+        <div class="visible-xs clearfix"><br /></div>
+        <div class="col-md-3 col-sm-5 col-xs-12">
+            <input type="submit" value="Sign in" class="btn btn-default" />
+        </div>
+
+    </div>
+
 }

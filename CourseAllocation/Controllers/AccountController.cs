@@ -62,7 +62,7 @@ namespace CourseAllocation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindAsync(model.Email, model.Password);
+                var user = await UserManager.FindAsync(model.GaTechId, model.Password);
                 if (user != null)
                 {
                     if (user.EmailConfirmed)
@@ -106,7 +106,7 @@ namespace CourseAllocation.Controllers
             {
                 if(ctx.Users.Where(m => m.GaTechId == model.GaTechId).Any())
                 { 
-                    ModelState.AddModelError("DuplicateGaTechId", "The Ga Tech ID already exists in the system.");
+                    ModelState.AddModelError("DuplicateGaTechId", "The Ga Tech ID has already been registered.");
                 }
             }
 
@@ -114,9 +114,10 @@ namespace CourseAllocation.Controllers
                 if (ModelState.IsValid)
                 {
 
+                    string email = model.GaTechId + "@gatech.edu";
 
 
-                    var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, GaTechId = model.GaTechId };
+                    var user = new ApplicationUser() { UserName = model.GaTechId, Email = email, GaTechId = model.GaTechId };
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
@@ -178,7 +179,7 @@ namespace CourseAllocation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByNameAsync(model.GaTechId);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     ModelState.AddModelError("", "The user either does not exist or is not confirmed.");
@@ -214,10 +215,10 @@ namespace CourseAllocation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByNameAsync(model.GaTechId);
                 if (user == null)
                 {
-                    ModelState.AddModelError("", string.Format("{0} does not exist.", model.Email));
+                    ModelState.AddModelError("", string.Format("{0} does not exist.", model.GaTechId));
                     return View();
                 }
 
@@ -283,7 +284,7 @@ namespace CourseAllocation.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByNameAsync(model.GaTechId);
                 if (user == null)
                 {
                     ModelState.AddModelError("", "No user found.");
