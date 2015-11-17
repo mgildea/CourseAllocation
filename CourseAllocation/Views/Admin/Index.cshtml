@@ -70,7 +70,7 @@
                                 <td><input type="text" class="form-control" placeholder="Title" data-bind="value: Courses.NewName"/></td>
                                 <td><input type="checkbox" data-bind="checked: Courses.NewIsFoundational"></td>
                                 <td>
-                                    <a href="#" class="close pull-right" data-bind="click:Courses.Save"><i class="fa fa-floppy-o"></i></a>
+                                    <a href="#" class="close pull-right" data-bind="click:Courses.Save" data-toggle="tooltip" data-placement="right" title="Save New Course"><i class="fa fa-floppy-o"></i></a>
                                     
                                     <select multiple title="Select Prerequisites" data-bind="selectPicker: Courses.NewPrereqs, optionsText: 'Number', optionsValue : 'ID', selectPickerOptions: { optionsArray: Courses.Records }"></select>
 
@@ -112,7 +112,7 @@
                             <td colspan="2">
                             <select class="form-control" data-bind="value: CourseSemesters.NewSemester, options: Semesters.Records(), optionsText: function(item) { return item.Type + ' ' + item.Year} , optionsValue: function(item) { return { Type : item.TypeValue, Year : item.Year} }, optionsCaption: 'Select Semester'"></select></td>
                             <td colspan="2">
-                                <a href="#" class="close pull-right" data-bind="click:CourseSemesters.Save"><i class="fa fa-floppy-o"></i></a>
+                                <a href="#" class="close pull-right" data-bind="click:CourseSemesters.Save" data-toggle="tooltip" data-placement="right" title="Save New Course Offering"><i class="fa fa-floppy-o"></i></a>
                                  <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select></td>
                         </tr>
                     </tbody>
