@@ -67,10 +67,12 @@ namespace CourseAllocation.Controllers
             {
                 if (course.Number == null || course.Name == null || ctx.Courses.Where(m => m.Number == course.Number).Any())
                 {
-                    //record already exists
+                    //record already exists or is invalid
                     return null;
-                   
                 }
+
+                var prereqIds = course.Prerequisites.Select(n => n.ID);
+                course.Prerequisites = ctx.Courses.Where(m => prereqIds.Contains(m.ID)).ToList();
 
                 ctx.Courses.Add(course);
                 ctx.SaveChanges();

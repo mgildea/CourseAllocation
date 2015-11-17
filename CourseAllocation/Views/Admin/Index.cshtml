@@ -72,14 +72,8 @@
                                 <td>
                                     <a href="#" class="close pull-right" data-bind="click:Courses.Save"><i class="fa fa-floppy-o"></i></a>
                                     
+                                    <select multiple title="Select Prerequisites" data-bind="selectPicker: Courses.NewPrereqs, optionsText: 'Number', optionsValue : 'ID', selectPickerOptions: { optionsArray: Courses.Records }"></select>
 
-                                    <select class="form-control" data-bind="options: Courses.Records(), selectedOptions: Courses.NewPrereqs(), optionsText: 'Name', optionsValue: 'ID'" multiple></select>
-
-                                     <!--<select data-bind="selectPicker: Courses.SelectedRecords, selectPickerOptions: { options: Courses.Records, optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'Please select...' }"></select>
-                                   
-                                     <select data-bind="selectPicker: NewPrereqs, selectPickerOptions: { options: Courses.Records(), optionsText: 'Name', optionsValue: 'ID', optionsCaption: 'select...' }"></select>
-                                         <select id="coursePrerequisites" class="selectpicker" multiple data-bind ="options: Courses.Records(), optionsText: 'Name', optionsValue : 'ID'"></select>
-                                         -->
                                 </td>
                             </tr>
                         </tbody>
@@ -89,7 +83,7 @@
                                 <td data-bind="text: Number"></td>
                                 <td data-bind="text: Name"></td>
                                 <td data-bind="text: IsFoundational"></td>
-                                <td></td>
+                                <td data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -159,6 +153,8 @@
 
 
 <script type="text/javascript">
+
+
 
     function CourseSemestersViewModel() {
         var self = this;
@@ -244,6 +240,12 @@
 
         self.Save = function () {
 
+            var prereqs = [];
+            ko.utils.arrayForEach(self.NewPrereqs(), function (item) {
+                prereqs.push({ID : item});
+            });
+
+
             $.ajax({
                 type: "POST",
                 url: "/Api/Course",
@@ -251,7 +253,8 @@
                     Number: self.NewNumber(),
                     Name: self.NewName(),
                     IsFoundational: self.NewIsFoundational(),
-                    Prerequisites: self.NewPrereqs()
+                    Prerequisites: prereqs
+                    
                 },
                 success: function (data) {
                     if (data !== null)
@@ -281,8 +284,13 @@
                 });
             });
         }
+        
+        
+        
     }
 
+
+   
 
     function SemestersViewModel() {
         var self = this;
