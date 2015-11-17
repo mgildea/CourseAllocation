@@ -50,8 +50,7 @@ namespace CourseAllocation.Controllers
                         c++;
                     }
                 } 
-            }
-            int acount = 12;
+            }       
             try
             {
                 GRBEnv env = new GRBEnv("mip1.log");
@@ -100,7 +99,7 @@ namespace CourseAllocation.Controllers
                         }
                     }
                     //MAX COURSES PER SEMESTER 
-                    for (   int k = 0; k < sems.Length; k++)
+                    for (int k = 0; k < sems.Length; k++)
                     {
                         constMaxPerSem = new GRBLinExpr();
                         for (int j = 0; j < courses.Length; j++)
@@ -135,6 +134,33 @@ namespace CourseAllocation.Controllers
                     //    }
                     //}
                 }
+
+                //MINIMIZE STUDENTS
+                for (int j = 0; j < courses.Length; j++)
+                {
+                    for (int k = 0; k < sems.Length; k++)
+                    { 
+                        constMinStudent = new GRBLinExpr();
+                        for (int i = 0; i < students.Length; i++)
+                        {
+                            constMinStudent.AddTerm(1, CourseAllocation[i, j, k]);
+                        }
+                    String sMinStudents = "MinStudentinCourse_" + j + 1 + ".Semester_" + k + 1;
+                    model.AddConstr(constMinStudent, GRB.LESS_EQUAL, X, sMinStudents);
+                    }
+                }
+
+                GRBLinExpr minX = new GRBLinExpr();
+                minX.AddTerm(1, X);
+                model.SetObjective(minX, GRB.MINIMIZE);
+
+                model.Optimize();
+                //writeResults(StdntCrsSem);
+                double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
+
+                model.Dispose();
+                env.Dispose();
+
             }
             catch (Exception e)
             {
