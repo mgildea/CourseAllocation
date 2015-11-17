@@ -36,5 +36,10 @@ namespace CourseAllocation.Models
 
         [JsonIgnore]
         public virtual ICollection<Requirement> Requirements { get; set; }
+
+        public static explicit operator Course(List<Course> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
