@@ -13,7 +13,7 @@ namespace CourseAllocation.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201511180250409_Recommendations"; }
+            get { return "201511180514009_Recommendations"; }
         }
         
         string IMigrationMetadata.Source

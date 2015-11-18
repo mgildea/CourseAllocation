@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 using CourseAllocation.Models;
+using System.Collections.Generic;
 using Gurobi;
 
 namespace CourseAllocation.Controllers
@@ -147,16 +148,12 @@ namespace CourseAllocation.Controllers
         private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems)
         {
             System.IO.StreamWriter writer = new System.IO.StreamWriter("c:\\output.txt");
-
-            int courseCounter;
             using (var ctx = new ApplicationDbContext())
             {
+                var rec = ctx.Recommendations.Create();
+                rec.Name = "Test 1";
                 for (int i = 0; i < students.Length; i++)
                 {
-                    //Recommendation re = new Recommendation();
-                    CourseSemester[] cs = new CourseSemester[12];
-                    courseCounter = 0;
-                    //re.StudentPreferences = students[i];
                     for (int j = 0; j < courses.Length; j++)
                     {
                         for (int k = 0; k < sems.Length; k++)
@@ -165,9 +162,11 @@ namespace CourseAllocation.Controllers
                             {
                                 if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
                                 {
-                                    cs[courseCounter].Course = courses[j];
-                                    cs[courseCounter].Semester = sems[k];
-                                    courseCounter++;
+                                    rec.StudentPreferences.Add(students[i]);
+                                    //CourseSemester
+                                    
+                                    //rec.Courses.Add(courses[j]);
+                                    //rec.Semesters.Add(sems[k]);
                                     writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                                 }
                             }
@@ -176,9 +175,8 @@ namespace CourseAllocation.Controllers
                             }
                         }
                     }
-                   // re.CourseSemesters = cs;
-                    //ctx.Recommendations.Add(re);
                 }
+                ctx.Recommendations.Add(rec);
                 ctx.SaveChanges();
             }
             writer.Close();
