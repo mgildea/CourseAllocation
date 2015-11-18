@@ -163,10 +163,12 @@ namespace CourseAllocation.Controllers
                                 if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
                                 {
                                     rec.StudentPreferences.Add(students[i]);
-                                    //CourseSemester
-                                    
-                                    //rec.Courses.Add(courses[j]);
-                                    //rec.Semesters.Add(sems[k]);
+
+                                    //MATT - The next 3 lines
+                                    //CourseSemester cs = new CourseSemester();
+                                    //cs = ctx.CourseSemesters.Where(m => m.Course.ID == courses[j].ID && m=>m.Semester.Type == sems[k].Type && m=>m.Semester.Year == sems[k].Year).Distinct();
+                                   // rec.CourseSemesters.Add(cs);
+
                                     writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                                 }
                             }
