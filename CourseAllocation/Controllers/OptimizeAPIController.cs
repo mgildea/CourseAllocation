@@ -130,9 +130,8 @@ namespace CourseAllocation.Controllers
 
                     model.Optimize();
 
-                    writeResults(CourseAllocation, students, courses, sems, crssems, dbConn);
-
                     double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
+                    writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue);
 
                     model.Dispose();
                     env.Dispose();
@@ -146,18 +145,16 @@ namespace CourseAllocation.Controllers
             return null;
         }
 
-        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx)
+        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx, double MaxClassSize)
         {
             System.IO.StreamWriter writer = new System.IO.StreamWriter("c:\\output.txt");
             Recommendation rec = new Recommendation();
-            //rec.StudentPreferences = new List<StudentPreference>();
-            //rec.CourseSemesters = new List<CourseSemester>();
             rec.Records = new List<RecommendationRecord>();
             rec.StudentPreferences = students;
             rec.CourseSemesters = crssems;
 
             rec.Name = DateTime.Now;
-
+            rec.MaxClassSize = MaxClassSize;
             for (int i = 0; i < students.Length; i++)
             {
                 for (int j = 0; j < courses.Length; j++)
@@ -169,8 +166,6 @@ namespace CourseAllocation.Controllers
                             if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
                             {
                                 rec.Records.Add(new RecommendationRecord() { StudentPreference = students[i], CourseSemester = crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]) });
-                                //rec.StudentPreferences.Add(students[i]);
-                                //rec.CourseSemesters.Add(crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]));
                                 writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                             }
                         }
