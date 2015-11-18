@@ -18,5 +18,7 @@ namespace CourseAllocation.Models
 
         public ICollection<Course> Courses { get; set; }
 
+        public ICollection<Recommendation> Recommendation { get; set; }
+
     }
 }

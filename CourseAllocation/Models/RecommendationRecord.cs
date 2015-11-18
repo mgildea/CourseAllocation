@@ -8,21 +8,13 @@ using System.Web;
 
 namespace CourseAllocation.Models
 {
-    public class CourseSemester
+    public class RecommendationRecord
     {
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        [Required]
-        public Semester Semester { get; set; }
+        public StudentPreference StudentPreference { get; set; }
 
-        [Required]
-        public Course Course { get; set; }
-
-        [Required, DefaultValue("true")]
-        public bool IsActive { get; set; }
-
-        public ICollection<Recommendation> Recommendation { get; set; }
+        public CourseSemester CourseSemester { get; set; }
     }
 }

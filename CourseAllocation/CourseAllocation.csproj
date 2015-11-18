@@ -242,11 +242,24 @@
     <Compile Include="Migrations\201511181517218_Recommendations1.Designer.cs">
       <DependentUpon>201511181517218_Recommendations1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511181915096_Recommendations2.cs" />
+    <Compile Include="Migrations\201511181915096_Recommendations2.Designer.cs">
+      <DependentUpon>201511181915096_Recommendations2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511181922361_Recommendations3.cs" />
+    <Compile Include="Migrations\201511181922361_Recommendations3.Designer.cs">
+      <DependentUpon>201511181922361_Recommendations3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511182009542_RecommendationRecord.cs" />
+    <Compile Include="Migrations\201511182009542_RecommendationRecord.Designer.cs">
+      <DependentUpon>201511182009542_RecommendationRecord.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
     <Compile Include="Models\CourseSemester.cs" />
     <Compile Include="Models\Recommendation.cs" />
+    <Compile Include="Models\RecommendationRecord.cs" />
     <Compile Include="Models\Requirement.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Semester.cs" />
@@ -488,6 +501,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511181517218_Recommendations1.resx">
       <DependentUpon>201511181517218_Recommendations1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511181915096_Recommendations2.resx">
+      <DependentUpon>201511181915096_Recommendations2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511181922361_Recommendations3.resx">
+      <DependentUpon>201511181922361_Recommendations3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511182009542_RecommendationRecord.resx">
+      <DependentUpon>201511182009542_RecommendationRecord.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

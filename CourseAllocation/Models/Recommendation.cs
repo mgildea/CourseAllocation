@@ -10,19 +10,21 @@ namespace CourseAllocation.Models
 {
     public class Recommendation
     {
-        public Recommendation()
-        {
-            StudentPreferences = new HashSet<StudentPreference>();
-            CourseSemesters = new HashSet<CourseSemester>();
-        }
+        //public Recommendation()
+        //{
+        //    StudentPreferences = new List<StudentPreference>();
+        //    CourseSemesters = new List<CourseSemester>();
+        //}
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        public DateTime Name { get; set; }
 
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
         public virtual ICollection<CourseSemester> CourseSemesters { get; set; }
+
+        public virtual ICollection<RecommendationRecord> Records { get; set; }
     }
 }
