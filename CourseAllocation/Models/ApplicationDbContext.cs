@@ -32,8 +32,6 @@ namespace CourseAllocation.Models
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<CourseSemester> CourseSemesters { get; set; }
 
-        
-
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

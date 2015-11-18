@@ -234,6 +234,10 @@
     <Compile Include="Migrations\201511180000208_CourseSemesterSoftDelete.Designer.cs">
       <DependentUpon>201511180000208_CourseSemesterSoftDelete.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511180250409_Recommendations.cs" />
+    <Compile Include="Migrations\201511180250409_Recommendations.Designer.cs">
+      <DependentUpon>201511180250409_Recommendations.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
@@ -473,6 +477,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511180000208_CourseSemesterSoftDelete.resx">
       <DependentUpon>201511180000208_CourseSemesterSoftDelete.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511180250409_Recommendations.resx">
+      <DependentUpon>201511180250409_Recommendations.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

@@ -13,22 +13,18 @@ namespace CourseAllocation.Controllers
         private Course[] courses;
         private Semester[] sems;
         private CourseSemester[] crssems;
-
         private GRBLinExpr MAX_COURSES_PER_SEMESTER = new GRBLinExpr(2);
 
         [HttpGet]
         public object Optimize()
         {
-            
-
             using (var dbConn = new ApplicationDbContext())
             {
                 students = dbConn.StudentPreferences.Include(m => m.Courses).ToArray();
-                crssems = GetCourseSemesters(dbConn);
+                crssems = dbConn.CourseSemesters.Where(m => m.IsActive == true).Include(m => m.Course).Include(m => m.Semester).ToArray();
                 courses = crssems.Select(m => m.Course).Distinct().ToArray();
-                sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m=>m.Year).ToArray();
+                sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m => m.Year).ToArray();
             }
-
             try
             {
                 GRBEnv env = new GRBEnv("mip1.log");
@@ -56,8 +52,8 @@ namespace CourseAllocation.Controllers
                 GRBLinExpr constStudentDesiredCourses; // = new GRBLinExpr();
                 GRBLinExpr constMaxPerSem;
                 GRBLinExpr constMinStudent = new GRBLinExpr();
-                GRBLinExpr constpreReq;
-                GRBLinExpr constpostReq;
+                //GRBLinExpr constpreReq;
+                //GRBLinExpr constpostReq;
                 GRBLinExpr temp = new GRBLinExpr(2);
 
                 //MUST TAKE DESIRED COURSE ONLY ONCE
@@ -132,7 +128,9 @@ namespace CourseAllocation.Controllers
                 model.SetObjective(minX, GRB.MINIMIZE);
 
                 model.Optimize();
-                writeResults(CourseAllocation, students, courses, sems);
+
+                writeResults(CourseAllocation,students, courses, sems);
+                
                 double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
 
                 model.Dispose();
@@ -149,34 +147,41 @@ namespace CourseAllocation.Controllers
         private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems)
         {
             System.IO.StreamWriter writer = new System.IO.StreamWriter("c:\\output.txt");
-            
-            for (int i = 0; i< students.Length; i++){
-        	    for (int j = 0; j< courses.Length; j++){
-        		    for (int k = 0; k< sems.Length; k++){
-                        try
+
+            int courseCounter;
+            using (var ctx = new ApplicationDbContext())
+            {
+                for (int i = 0; i < students.Length; i++)
+                {
+                    //Recommendation re = new Recommendation();
+                    CourseSemester[] cs = new CourseSemester[12];
+                    courseCounter = 0;
+                    //re.StudentPreferences = students[i];
+                    for (int j = 0; j < courses.Length; j++)
+                    {
+                        for (int k = 0; k < sems.Length; k++)
                         {
-                            if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
-                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                            try
+                            {
+                                if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
+                                {
+                                    cs[courseCounter].Course = courses[j];
+                                    cs[courseCounter].Semester = sems[k];
+                                    courseCounter++;
+                                    writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                                }
+                            }
+                            catch (GRBException e)
+                            {
+                            }
                         }
-                        catch (GRBException e)
-                        {
-                        }
-        		    }
-        	    }
+                    }
+                   // re.CourseSemesters = cs;
+                    //ctx.Recommendations.Add(re);
+                }
+                ctx.SaveChanges();
             }
             writer.Close();
-        }
-       
-        private static CourseSemester[] GetCourseSemesters(ApplicationDbContext dbConn)
-        {
-            CourseSemester[] crssems;
-            var temp = dbConn.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).ToList();
-            crssems = new CourseSemester[temp.Count];
-            for (int i = 0; i < temp.Count; i++)
-            {
-                crssems[i] = temp[i];
-            }
-            return crssems;
         }
     }
 }
