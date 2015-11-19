@@ -33,7 +33,8 @@
 
                 @if(User.Identity.IsAuthenticated)
                 {
-                    <li class="@if (controller.Equals("Admin")) {<text>active</text> }">@Html.ActionLink("Admin", "Index", "Admin")</li>  
+                    <li class="@if (controller.Equals("Admin")) {<text>active</text> }">@Html.ActionLink("Admin", "Index", "Admin")</li>
+                    <li class="@if (controller.Equals("Student")) {<text>active</text> }">@Html.ActionLink("My Schedule", "Index", "Student")</li>
                 }
               @* <li>@Html.ActionLink("About", "About", "Home")</li>
 

@@ -14,6 +14,7 @@
     <li class="pull-right"><a data-target="#courseSemesters" data-toggle="tab">Course Offerings</a></li>
     @*<li class="pull-right"><a data-target="#students" data-toggle="tab">Students</a></li>*@
     <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab">Student Preferences</a></li>
+    <li class="pull-right"><a data-target="#results" data-toggle="tab">Results</a></li>
 </ul>
 
 
@@ -134,32 +135,7 @@
 
     </div>
 
-    @*<div class="tab-pane fade" id="students">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 table-responsive">
-
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            </div>
-        </div>*@
+    
 
     <div class="tab-pane fade" id="studentCourses">
         <div class="row" >
@@ -167,49 +143,23 @@
             <select class="form-control" data-bind="value: Students.Selected, options: Students.Records(), optionsText: $data, optionsValue: $data, optionsCaption: 'Select Student'"></select>
 
         </div>
-            <div class="col-md-8 col-md-offset-1" data-bind="if: Students.StudentPreferences.GaTechId() !== ''">
+            <div class="col-md-8 col-md-offset-1" data-bind="if: Students.StudentPreferences.IsPopulated()">
                 <div data-bind="template: { name: 'preference-template', data: Students.StudentPreferences }"></div>
             </div>
             
         </div>
     </div>
+
+    <div class="tab-pane fade" id="results">
+        results
+    </div>
 </div>
 
 
-<script type="text/html" id="preference-template">
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Title</th>
-                    <th>Prerequisites</th>
-
-                </tr>
-            </thead>
-            <tbody data-bind="foreach: Courses()">
-
-                <tr>
-                    <td data-bind="text: Number"></td>
-                    <td data-bind="text: Name"></td>
-                    <td data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</script>
-
-
+@Html.Partial("_StudentPreferences")
 
         <script type="text/javascript">
 
-            function StudentPreferenceViewModel() {
-                var self = this;
-
-                self.GaTechId = ko.observable()
-
-                self.Courses = ko.observableArray();
-            }
 
 
             function StudentsViewModel() {
@@ -224,24 +174,10 @@
                 self.StudentPreferences = new StudentPreferenceViewModel();
 
                 self.Selected.subscribe(function (newValue) {
-                    self.StudentPreferences.GaTechId('');
-                    self.StudentPreferences.Courses.removeAll();
 
-                    if (typeof newValue !== 'undefined')
-                    {
-                        $.getJSON("/Api/StudentPreferences", { GaTechId: self.Selected() }, function (data) {
+                    self.StudentPreferences.GaTechId(newValue);
 
-                            self.StudentPreferences.GaTechId(self.Selected());
-
-                            ko.utils.arrayForEach(data, function (item) {
-                                self.StudentPreferences.Courses.push(item);
-
-                            });
-                        });
-                    }
-
-                        
-                }, this)
+                }, this);
 
                 self._records = ko.observableArray();
 
@@ -477,5 +413,5 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             });
-        </script>
+</script>
 

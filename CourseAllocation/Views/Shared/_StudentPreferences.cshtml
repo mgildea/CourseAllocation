@@ -1,0 +1,60 @@
+﻿
+<script type="text/html" id="preference-template">
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Title</th>
+                    <th>Prerequisites</th>
+
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: Courses()">
+
+                <tr>
+                    <td data-bind="text: Number"></td>
+                    <td data-bind="text: Name"></td>
+                    <td data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<script type="text/javascript">
+
+            function StudentPreferenceViewModel() {
+                var self = this;
+
+                self.GaTechId = ko.observable('');
+
+                self.Courses = ko.observableArray();
+
+                self.IsPopulated = ko.computed(function () {
+                    return (self.GaTechId() !== 'undefined');
+                });
+
+
+                self.GaTechId.subscribe(function (newValue) {
+
+                    self.Courses.removeAll();
+
+                    if (typeof newValue !== 'undefined')
+                    {
+                        $.getJSON("/Api/StudentPreferences", { GaTechId: newValue }, function (data) {
+
+                            
+
+                            ko.utils.arrayForEach(data, function (item) {
+                                self.Courses.push(item);
+
+                            });
+                        });
+                    }
+
+
+                }, this);
+            }
+
+</script>

@@ -1,0 +1,52 @@
+﻿@model CourseAllocation.Models.ApplicationUser
+
+<h2 class="underline">My Schedule Preferences</h2>
+
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active pull-right"><a data-target="#preferences" data-toggle="tab">Preferences</a></li>
+    <li class="pull-right"><a data-target="#results" data-toggle="tab">Results</a></li>
+
+</ul>
+
+
+
+<div class="tab-content">
+
+    <div class="tab-pane fade in active" id="preferences">
+        <div class="row">
+
+            <div class="col-md-8 col-md-offset-2" data-bind="if: StudentPreferences.IsPopulated() !== ''">
+                <div data-bind="template: { name: 'preference-template', data: StudentPreferences }"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="results">
+        results
+    </div>
+
+</div>
+
+
+@Html.Partial("_StudentPreferences")
+
+
+
+<script type="text/javascript">
+    function ViewModel() {
+        var self = this;
+
+        self.StudentPreferences =  new StudentPreferenceViewModel();
+        self.StudentPreferences.GaTechId('@Model.GaTechId');
+    }
+
+
+    ko.applyBindings(ViewModel);
+
+    @*$(document).ready(function () {
+        ViewModel.StudentPreferences.GaTechId('@Model.GaTechId');
+    });*@
+
+</script>
