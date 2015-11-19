@@ -263,6 +263,10 @@
     <Compile Include="Migrations\201511182053371_Recommendation.Designer.cs">
       <DependentUpon>201511182053371_Recommendation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511191900166_emptyMerge.cs" />
+    <Compile Include="Migrations\201511191900166_emptyMerge.Designer.cs">
+      <DependentUpon>201511191900166_emptyMerge.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
@@ -527,6 +531,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511182053371_Recommendation.resx">
       <DependentUpon>201511182053371_Recommendation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511191900166_emptyMerge.resx">
+      <DependentUpon>201511191900166_emptyMerge.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
