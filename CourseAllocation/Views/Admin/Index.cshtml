@@ -126,7 +126,8 @@
                             <td data-bind="text: Type"></td>
                             <td data-bind="text: Year"></td>
                             <td data-bind="text: Number"></td>
-                            <td data-bind="text: Name"></td>
+                          
+                            <td> <span data-bind="text: Name"></span> <a href="#" data-bind="click: CourseSemesters.RemoveOffering" class="close pull-right"><i class="fa fa-times"></i></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -220,6 +221,28 @@
 
                 self.NewSemester = ko.observable('');
                 self.NewCourse = ko.observable('');
+
+
+                self.RemoveOffering = function () {
+                    var obj = this;
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/Api/RemoveCourseSemester/" + this.ID,
+                        data: {},
+                        success: function (data) {
+
+                            self._records.remove(obj);
+
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("error removing record");
+                        },
+                        complete: function (data) {
+
+                        }
+                    });
+                };
 
                 self.Save = function () {
 

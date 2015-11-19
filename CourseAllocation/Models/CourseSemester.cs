@@ -15,14 +15,14 @@ namespace CourseAllocation.Models
         public int ID { get; set; }
 
         [Required]
-        public Semester Semester { get; set; }
+        public virtual Semester Semester { get; set; }
 
         [Required]
-        public Course Course { get; set; }
+        public virtual Course Course { get; set; }
 
         [Required, DefaultValue("true")]
         public bool IsActive { get; set; }
 
-        public ICollection<Recommendation> Recommendation { get; set; }
+        public virtual ICollection<Recommendation> Recommendation { get; set; }
     }
 }

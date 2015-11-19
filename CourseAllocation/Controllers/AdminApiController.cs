@@ -48,12 +48,34 @@ namespace CourseAllocation.Controllers
             {
                 ctx.StudentPreferences.Where(m => m.GaTechId == studentPreference.GaTechId && m.IsActive).ToList().ForEach(m => m.IsActive = false);
 
+                var ids = studentPreference.Courses.Select(n => n.ID);
+
+                studentPreference.Courses = ctx.Courses.Where(m => ids.Contains(m.ID)).ToList();
+
                 ctx.StudentPreferences.Add(studentPreference);
 
                 ctx.SaveChanges();
             }
 
             return true;
+        }
+
+        [HttpPost]
+        public bool RemoveCourseSemester(int ID)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+
+                ctx.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).Single(m => m.ID == ID).IsActive = false;
+
+
+
+               // ctx.CourseSemesters.Find(ID).IsActive = false;
+             
+                ctx.SaveChanges();
+            }
+
+                return true;
         }
 
 
@@ -88,7 +110,7 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                return ctx.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).ToList().Select(m => new CourseSemesterViewModel(m));
+                return ctx.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).Where(m => m.IsActive).ToList().Select(m => new CourseSemesterViewModel(m));
             }
         }
 

@@ -55,6 +55,13 @@ defaults: new { controller = "AdminApi", action = "StudentPreferences" }
 
   );
 
+            config.Routes.MapHttpRoute(
+name: "RemoveCourseSemester",
+routeTemplate: "Api/RemoveCourseSemester/{ID}",
+defaults: new { controller = "AdminApi", action = "RemoveCourseSemester", ID = RouteParameter.Optional}
+
+);
+
 
             config.Routes.MapHttpRoute(
 name: "StudentPreference",
