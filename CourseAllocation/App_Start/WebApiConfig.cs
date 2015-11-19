@@ -57,6 +57,14 @@ defaults: new { controller = "AdminApi", action = "StudentPreferences" }
 
 
             config.Routes.MapHttpRoute(
+name: "StudentPreference",
+routeTemplate: "Api/StudentPreference",
+defaults: new { controller = "AdminApi", action = "StudentPreference" }
+
+);
+
+
+            config.Routes.MapHttpRoute(
            name: "QueryCourses",
            routeTemplate: "Api/Courses",
            defaults: new { controller = "AdminApi", action = "Courses" }
@@ -65,8 +73,8 @@ defaults: new { controller = "AdminApi", action = "StudentPreferences" }
 
             config.Routes.MapHttpRoute(
          name: "Course",
-         routeTemplate: "Api/Course",
-         defaults: new { controller = "AdminApi", action = "Course" }
+         routeTemplate: "Api/Course/{ID}",
+         defaults: new { controller = "AdminApi", action = "Course", ID = RouteParameter.Optional}
 
      );
 

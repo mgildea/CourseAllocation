@@ -12,8 +12,8 @@
     <li class="active pull-right"><a data-target="#semesters" data-toggle="tab">Semesters</a></li>
     <li class="pull-right"><a data-target="#courses" data-toggle="tab">Courses</a></li>
     <li class="pull-right"><a data-target="#courseSemesters" data-toggle="tab">Course Offerings</a></li>
-    @*<li class="pull-right"><a data-target="#students" data-toggle="tab">Students</a></li>*@
-    <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab">Student Preferences</a></li>
+    
+    <li class="pull-right"><a data-target="#studentCourses" data-toggle="tab" data-bind="click: Students.Reset">Student Preferences</a></li>
     <li class="pull-right"><a data-target="#results" data-toggle="tab">Results</a></li>
 </ul>
 
@@ -165,6 +165,18 @@
             function StudentsViewModel() {
                 var self = this;
 
+
+                self.Reset = function () {
+                    self.Selected('');
+                };
+
+                //self.Reset = ko.observable(false);
+
+                //self.Reset.subscribe(function (newValue) {
+                //    if(newValue)
+                //        self.Selected('');
+                //});
+
                 self.Selected = ko.observable('');
 
                 self.loadStudent = function () {
@@ -180,8 +192,6 @@
                     else{
                         self.StudentPreferences.GaTechId('');
                     }
-                    
-                   
                 }, this);
 
                 self._records = ko.observableArray();
@@ -400,6 +410,9 @@
                 self.Students.Query();
 
 
+
+
+
                 self.optimize = function () {
                     $.ajax({
                         url: "/Api/Optimizer",
@@ -418,5 +431,12 @@
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
             });
+
+            //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+
+            //    ViewModel.Students().Selected('');
+            //   // e.target // newly activated tab
+            //   // e.relatedTarget // previous active tab
+            //})
 </script>
 

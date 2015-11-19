@@ -41,6 +41,21 @@ namespace CourseAllocation.Controllers
             }
         }
 
+        [HttpPost]
+        public bool StudentPreference(StudentPreference studentPreference)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                ctx.StudentPreferences.Where(m => m.GaTechId == studentPreference.GaTechId && m.IsActive).ToList().ForEach(m => m.IsActive = false);
+
+                ctx.StudentPreferences.Add(studentPreference);
+
+                ctx.SaveChanges();
+            }
+
+            return true;
+        }
+
 
         [HttpPost]
         public CourseSemesterViewModel CourseSemester(CourseSemester courseSemester)
@@ -89,6 +104,17 @@ namespace CourseAllocation.Controllers
         }
 
 
+        [HttpGet]
+        public CourseViewModel Course([FromUri] int ID)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                return new CourseViewModel(ctx.Courses.Include(m => m.Prerequisites).Single(m => m.ID == ID));
+            }
+        }
+
+
+
         [HttpPost]
         public CourseViewModel Course(Course course)
         {
@@ -100,9 +126,12 @@ namespace CourseAllocation.Controllers
                     return null;
                 }
 
-                var prereqIds = course.Prerequisites.Select(n => n.ID);
-                course.Prerequisites = ctx.Courses.Where(m => prereqIds.Contains(m.ID)).ToList();
+                if(course.Prerequisites != null)
+                {
+                    var prereqIds = course.Prerequisites.Select(n => n.ID);
 
+                    course.Prerequisites = ctx.Courses.Where(m => prereqIds.Contains(m.ID)).ToList();
+                }
                 ctx.Courses.Add(course);
                 ctx.SaveChanges();
 

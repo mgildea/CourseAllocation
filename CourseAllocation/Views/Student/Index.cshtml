@@ -1,6 +1,9 @@
 ﻿@model CourseAllocation.Models.ApplicationUser
+@{
+    ViewBag.Title = Model.GaTechId;
+}
 
-<h2 class="underline">My Schedule Preferences</h2>
+<h2 class="underline">My Course Preferences</h2>
 
 
 <ul class="nav nav-tabs" role="tablist">
@@ -45,8 +48,10 @@
 
     ko.applyBindings(ViewModel);
 
-    @*$(document).ready(function () {
-        ViewModel.StudentPreferences.GaTechId('@Model.GaTechId');
-    });*@
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+
+
 
 </script>

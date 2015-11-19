@@ -6,17 +6,30 @@
                 <tr>
                     <th>Number</th>
                     <th>Title</th>
-                    <th>Prerequisites</th>
+                    <th>Prerequisites
+                        <a href="#" class="close pull-right" data-bind="click:Save" data-toggle="tooltip" data-placement="right" title="Save Preferences"><i class="fa fa-floppy-o"></i></a>
+
+                    </th>
 
                 </tr>
             </thead>
+            <tbody>
+                <tr>
+                   
+                    <td colspan="3">
+                        <a href="#" class="close pull-right" data-bind="click: AddCourse"><i class="fa fa-plus"></i></a>
+                        <select class="form-control" data-bind="value: NewCourse, options: Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) {return item.ID}, optionsCaption: 'Select Course'"></select>
+                    </td>
+                </tr>
+            </tbody>
             <tbody data-bind="foreach: Courses()">
-
+            
                 <tr>
                     <td data-bind="text: Number"></td>
                     <td data-bind="text: Name"></td>
-                    <td data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></td>
+                    <td> <span data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></span> <a href="#" data-bind="click: $parent.RemoveCourse" class="close pull-right"  ><i class="fa fa-times"></i></a></td>
                 </tr>
+         
             </tbody>
         </table>
     </div>
@@ -27,6 +40,84 @@
             function StudentPreferenceViewModel() {
                 var self = this;
 
+                self._records = ko.observableArray();
+
+                self.Records = ko.computed(function () {
+                    return self._records().sort(function (left, right) {
+                        return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
+                    });
+                });
+
+
+                self.Query = function () {
+                    self._records.removeAll();
+                    $.getJSON("/Api/Courses", function (data) {
+                        ko.utils.arrayForEach(data, function (item) {
+                            self._records.push(item);
+
+                        });
+                    });
+                }
+
+
+                self.Save = function () {
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Api/StudentPreference",
+                        data: {
+                            GaTechId : self.GaTechId(),
+                            Courses: self.Courses(),
+                            IsActive : true
+
+                        },
+                        success: function (data) {
+                            alert("Preferences Successfully saved!");
+
+                            //if (data !== null)
+                            //    self._records.push(data);
+
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            alert("Error Saving Preferences.")
+                        },
+                        complete: function (data) {
+   
+                        }
+                    });
+                };
+
+             
+
+                self.NewCourse = ko.observable('');
+
+                self.AddCourse = function () {
+
+                    if (self.NewCourse() !== undefined)
+                    {
+                        $.getJSON("/Api/Course/" + self.NewCourse(), function (data) {
+
+                           var exists = ko.utils.arrayFirst(self.Courses(), function (item) {
+                                return data.ID === item.ID;
+                            })
+
+                            if (!exists) {
+                                self.Courses.push(data);
+                            }
+                           
+                        });
+
+                        self.NewCourse('');
+                    }
+                };
+
+                self.RemoveCourse = function() {
+                    self.Courses.remove(this);
+                };
+
+
+
+
                 self.GaTechId = ko.observable('');
 
                 self.Courses = ko.observableArray();
@@ -35,24 +126,16 @@
                     return self.GaTechId() !== '';
                 });
 
-
                 self.GaTechId.subscribe(function (newValue) {
-
                     self.Courses.removeAll();
 
-        
+                    self.Query();
+
                         $.getJSON("/Api/StudentPreferences", { GaTechId: self.GaTechId() }, function (data) {
-
-                            
-
                             ko.utils.arrayForEach(data, function (item) {
                                 self.Courses.push(item);
-
                             });
                         });
-                    
-
-
                 }, this);
             }
 
