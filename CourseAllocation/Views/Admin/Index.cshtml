@@ -167,7 +167,7 @@
             <select class="form-control" data-bind="value: Students.Selected, options: Students.Records(), optionsText: $data, optionsValue: $data, optionsCaption: 'Select Student'"></select>
 
         </div>
-            <div class="col-md-8 col-md-offset-1">
+            <div class="col-md-8 col-md-offset-1" data-bind="if: Students.StudentPreferences.GaTechId() !== ''">
                 <div data-bind="template: { name: 'preference-template', data: Students.StudentPreferences }"></div>
             </div>
             
