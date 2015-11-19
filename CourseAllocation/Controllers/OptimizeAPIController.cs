@@ -22,7 +22,7 @@ namespace CourseAllocation.Controllers
             using (var dbConn = new ApplicationDbContext())
             {
                 Recommendation rec = dbConn.Recommendations.First();
-                students = dbConn.StudentPreferences.Include(m => m.Courses).ToArray();
+                students = dbConn.StudentPreferences.Where(m=>m.IsActive == true).Include(m => m.Courses).ToArray();
                 crssems = dbConn.CourseSemesters.Where(m => m.IsActive == true).Include(m => m.Course).Include(m => m.Semester).ToArray();
                 courses = crssems.Select(m => m.Course).Distinct().ToArray();
                 sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m => m.Year).ToArray();
