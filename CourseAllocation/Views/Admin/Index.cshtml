@@ -251,7 +251,8 @@
                         url: "/Api/CourseSemester",
                         data: {
                             Course: self.NewCourse(),
-                            Semester: self.NewSemester()
+                            Semester: self.NewSemester(),
+                            IsActive : true
 
                         },
                         success: function (data) {
