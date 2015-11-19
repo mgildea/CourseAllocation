@@ -13,13 +13,40 @@ namespace CourseAllocation.Controllers
     public class AdminApiController : ApiController
     {
 
+        [HttpGet]
+        public IEnumerable<string> Students()
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                return ctx.StudentPreferences.Select(m => m.GaTechId).Distinct().ToList();
+            }
+        }
+
+
+        [HttpGet]
+        public IEnumerable<CourseViewModel> StudentPreferences(string GaTechId)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var preference = ctx.StudentPreferences.Include(m => m.Courses).SingleOrDefault(m => m.IsActive && m.GaTechId == GaTechId);
+
+                if (preference == null)
+                    return new List<CourseViewModel>();
+
+                var courseIds = preference.Courses.Select(m => m.ID).ToArray();
+
+                return ctx.Courses.Include(m => m.Prerequisites).ToList().Where(m => courseIds.Contains(m.ID)).Select(m => new CourseViewModel(m));
+            }
+        }
+
+
         [HttpPost]
         public CourseSemesterViewModel CourseSemester(CourseSemester courseSemester)
         {
             using (var ctx = new ApplicationDbContext())
             {
                 if(courseSemester == null || courseSemester.Course == null || courseSemester.Semester == null ||
-                    ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year).Any())
+                    ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year && m.IsActive).Any())
                 {
                     //record already exists or data incomplete
                     return null;

@@ -32,6 +32,22 @@ namespace CourseAllocation
 
       );
 
+
+            config.Routes.MapHttpRoute(
+        name: "QueryStudents",
+        routeTemplate: "Api/Students",
+        defaults: new { controller = "AdminApi", action = "Students" }
+
+    );
+
+            config.Routes.MapHttpRoute(
+name: "QueryStudentPreferences",
+routeTemplate: "Api/StudentPreferences",
+defaults: new { controller = "AdminApi", action = "StudentPreferences" }
+
+);
+
+
             config.Routes.MapHttpRoute(
       name: "CourseSemester",
       routeTemplate: "Api/CourseSemester",

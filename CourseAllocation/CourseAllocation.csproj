@@ -254,6 +254,10 @@
     <Compile Include="Migrations\201511182009542_RecommendationRecord.Designer.cs">
       <DependentUpon>201511182009542_RecommendationRecord.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511191740384_preferencesIsActive.cs" />
+    <Compile Include="Migrations\201511191740384_preferencesIsActive.Designer.cs">
+      <DependentUpon>201511191740384_preferencesIsActive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
@@ -510,6 +514,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511182009542_RecommendationRecord.resx">
       <DependentUpon>201511182009542_RecommendationRecord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511191740384_preferencesIsActive.resx">
+      <DependentUpon>201511191740384_preferencesIsActive.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

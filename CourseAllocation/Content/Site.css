@@ -123,3 +123,14 @@ textarea {
 .tooltip {
     min-width : 200px;
 }
+
+.tab-content {
+    padding: 10px;
+}
+.tab-content  > .tab-pane {
+    display: none;
+  }
+.tab-content  > .active {
+    display: block;
+  }
+}

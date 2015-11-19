@@ -6,6 +6,21 @@ using System.Web;
 
 namespace CourseAllocation.ViewModels
 {
+    public class StudentPreferenceViewModel
+    {
+        public int ID { get; set; }
+        public string GaTechId { get; set; }
+
+
+        public StudentPreferenceViewModel(StudentPreference m)
+        {
+
+            GaTechId = m.GaTechId;
+        }
+
+    }
+
+
     public class CourseSemesterViewModel
     {
         public int ID { get; set; }

@@ -216,6 +216,13 @@ namespace CourseAllocation.Migrations
             }
 
 
+            for(int i = 1; i <= 600; i++)
+            {
+                context.StudentPreferences.AddOrUpdate(
+                    m => m.GaTechId,
+                    new StudentPreference { GaTechId = "Student" + i, Courses = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList()}
+                    );
+            }
 
         }
     }
