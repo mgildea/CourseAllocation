@@ -10,16 +10,13 @@ namespace CourseAllocation.Models
 {
     public class Recommendation
     {
-        //public Recommendation()
-        //{
-        //    StudentPreferences = new List<StudentPreference>();
-        //    CourseSemesters = new List<CourseSemester>();
-        //}
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
         [Required]
         public DateTime Name { get; set; }
+        
+        public Double MaxClassSize { get; set; }
 
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
