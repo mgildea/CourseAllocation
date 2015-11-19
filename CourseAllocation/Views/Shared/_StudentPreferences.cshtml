@@ -32,7 +32,7 @@
                 self.Courses = ko.observableArray();
 
                 self.IsPopulated = ko.computed(function () {
-                    return (self.GaTechId() !== 'undefined');
+                    return self.GaTechId() !== '';
                 });
 
 
@@ -40,9 +40,8 @@
 
                     self.Courses.removeAll();
 
-                    if (typeof newValue !== 'undefined')
-                    {
-                        $.getJSON("/Api/StudentPreferences", { GaTechId: newValue }, function (data) {
+        
+                        $.getJSON("/Api/StudentPreferences", { GaTechId: self.GaTechId() }, function (data) {
 
                             
 
@@ -51,7 +50,7 @@
 
                             });
                         });
-                    }
+                    
 
 
                 }, this);

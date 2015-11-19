@@ -220,7 +220,7 @@ namespace CourseAllocation.Migrations
             {
                 context.StudentPreferences.AddOrUpdate(
                     m => m.GaTechId,
-                    new StudentPreference { GaTechId = "Student" + i, Courses = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList()}
+                    new StudentPreference { GaTechId = "Student" + i, IsActive = true, Courses = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList()}
                     );
             }
 

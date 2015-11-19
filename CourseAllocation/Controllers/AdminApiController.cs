@@ -18,7 +18,9 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                return ctx.StudentPreferences.Select(m => m.GaTechId).Distinct().ToList();
+                return ctx.StudentPreferences.Where(m => m.IsActive).Select(m => m.GaTechId).ToList();
+                //return ctx.StudentPreferences.OrderBy(m => m.GaTechId).Select(m => m.GaTechId).Distinct().ToList();
+
             }
         }
 

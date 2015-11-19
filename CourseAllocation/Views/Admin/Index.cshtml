@@ -143,7 +143,7 @@
             <select class="form-control" data-bind="value: Students.Selected, options: Students.Records(), optionsText: $data, optionsValue: $data, optionsCaption: 'Select Student'"></select>
 
         </div>
-            <div class="col-md-8 col-md-offset-1" data-bind="if: Students.StudentPreferences.IsPopulated()">
+            <div class="col-md-8 col-md-offset-1" data-bind="visible: Students.StudentPreferences.IsPopulated()">
                 <div data-bind="template: { name: 'preference-template', data: Students.StudentPreferences }"></div>
             </div>
             
@@ -174,9 +174,14 @@
                 self.StudentPreferences = new StudentPreferenceViewModel();
 
                 self.Selected.subscribe(function (newValue) {
-
-                    self.StudentPreferences.GaTechId(newValue);
-
+                    if (typeof newValue !== 'undefined') {
+                        self.StudentPreferences.GaTechId(newValue);
+                    }
+                    else{
+                        self.StudentPreferences.GaTechId('');
+                    }
+                    
+                   
                 }, this);
 
                 self._records = ko.observableArray();

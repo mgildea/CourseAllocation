@@ -16,7 +16,7 @@
     <div class="tab-pane fade in active" id="preferences">
         <div class="row">
 
-            <div class="col-md-8 col-md-offset-2" data-bind="if: StudentPreferences.IsPopulated() !== ''">
+            <div class="col-md-8 col-md-offset-2" data-bind="if: StudentPreferences.IsPopulated">
                 <div data-bind="template: { name: 'preference-template', data: StudentPreferences }"></div>
             </div>
 
