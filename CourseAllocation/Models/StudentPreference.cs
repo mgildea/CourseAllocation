@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CourseAllocation.Models
 {
-    public class StudentPreference
+    public class StudentPreference : ILog
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
@@ -23,6 +23,13 @@ namespace CourseAllocation.Models
         public ICollection<Course> Courses { get; set; }
 
         public ICollection<Recommendation> Recommendation { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required, ForeignKey("CreatedBy")]
+        public string CreatedBy_Id { get; set; }
+        public virtual ApplicationUser CreatedBy { get; set; }
 
     }
 }

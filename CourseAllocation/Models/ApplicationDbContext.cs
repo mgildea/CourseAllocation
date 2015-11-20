@@ -10,6 +10,9 @@ namespace CourseAllocation.Models
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public string UserName { get; set; }
+       // private string _userName = string.Empty;
+
         public ApplicationDbContext()
             : base("CourseAllocation", throwIfV1Schema: false)
         {
@@ -20,6 +23,25 @@ namespace CourseAllocation.Models
         {
             return new ApplicationDbContext();
         }
+
+
+
+        public override int SaveChanges()
+        {
+            var username = (HttpContext.Current != null && HttpContext.Current.User != null) ? HttpContext.Current.User.Identity.Name : UserName;
+            
+            var user =  this.Users.Single(m => m.UserName == username);
+
+            foreach(var entry in this.ChangeTracker.Entries().Where(m => m.Entity is ILog && (m.State == EntityState.Added || m.State == EntityState.Modified)))
+            {
+                ((ILog)entry.Entity).CreatedAt = DateTime.UtcNow;
+                ((ILog)entry.Entity).CreatedBy_Id = user.Id;
+
+            }
+
+            return base.SaveChanges();
+        }
+
 
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<Concentration> Concentrations { get; set; }

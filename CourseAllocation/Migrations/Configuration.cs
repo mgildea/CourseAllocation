@@ -174,7 +174,19 @@ namespace CourseAllocation.Migrations
 
         protected override void Seed(CourseAllocation.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
+
+            //if (System.Diagnostics.Debugger.IsAttached == false)
+            //    System.Diagnostics.Debugger.Launch();
+
+            var user = context.Users.FirstOrDefault(m => m.UserName == 'admin');
+
+            if(user == null)
+            {
+                user = new ApplicationUser() { UserName = "admin", Email = "" };
+                context.Users.Add(user);
+            }
+
+            context.UserName = user.UserName;
 
             context.Courses.AddOrUpdate(
                 m => m.Number,

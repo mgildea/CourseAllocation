@@ -1,6 +1,6 @@
 ﻿@model CourseAllocation.Models.ApplicationUser
 @{
-    ViewBag.Title = Model.GaTechId;
+    ViewBag.Title = Model.UserName;
 }
 
 <h2 class="underline">My Course Preferences</h2>
@@ -42,7 +42,7 @@
         var self = this;
 
         self.StudentPreferences =  new StudentPreferenceViewModel();
-        self.StudentPreferences.GaTechId('@Model.GaTechId');
+        self.StudentPreferences.GaTechId('@Model.UserName');
     }
 
 

@@ -104,7 +104,7 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                if(ctx.Users.Where(m => m.GaTechId == model.GaTechId).Any())
+                if(ctx.Users.Where(m => m.UserName == model.GaTechId).Any())
                 { 
                     ModelState.AddModelError("DuplicateGaTechId", "The Ga Tech ID has already been registered.");
                 }
@@ -117,7 +117,7 @@ namespace CourseAllocation.Controllers
                     string email = model.GaTechId + "@gatech.edu";
 
 
-                    var user = new ApplicationUser() { UserName = model.GaTechId, Email = email, GaTechId = model.GaTechId };
+                    var user = new ApplicationUser() { UserName = model.GaTechId, Email = email};
                     IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {

@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CourseAllocation.Models
 {
-    public class CourseSemester
+    public class CourseSemester : ILog
     {
 
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -24,5 +24,13 @@ namespace CourseAllocation.Models
         public bool IsActive { get; set; }
 
         public virtual ICollection<Recommendation> Recommendation { get; set; }
+
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required, ForeignKey("CreatedBy")]
+        public string CreatedBy_Id { get; set; }
+        public virtual ApplicationUser CreatedBy { get; set; }
     }
 }

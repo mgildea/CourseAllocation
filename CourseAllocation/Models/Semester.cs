@@ -14,33 +14,21 @@ namespace CourseAllocation.Models
         Fall
     }
 
-    //public sealed class SemesterType
-    //{
-    //    private readonly int Value;
-    //    private readonly string Name;
+ 
 
-    //    public static readonly SemesterType SPRING = new SemesterType(1, "Spring");
-    //    public static readonly SemesterType SUMMER = new SemesterType(1, "Summer");
-    //    public static readonly SemesterType FALL = new SemesterType(1, "Fall");
-
-    //    private SemesterType(int _value, string _name)
-    //    {
-    //        Value = _value;
-    //        Name = _name;
-    //    }
-
-    //    public override string ToString()
-    //    {
-    //        return Name;
-    //    }
-    //}
-
-    public class Semester
+    public class Semester : ILog
     {
         [Required, Column(Order = 0), Key]
         public SemesterType Type { get; set; }
 
         [Required, Column(Order = 1), Key]
         public int Year { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required, ForeignKey("CreatedBy")]
+        public string CreatedBy_Id { get; set; }
+        public virtual ApplicationUser CreatedBy { get; set; }
     }
 }

@@ -267,10 +267,23 @@
     <Compile Include="Migrations\201511191900166_emptyMerge.Designer.cs">
       <DependentUpon>201511191900166_emptyMerge.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511202054048_ilog.cs" />
+    <Compile Include="Migrations\201511202054048_ilog.Designer.cs">
+      <DependentUpon>201511202054048_ilog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511202200143_ilogrequired.cs" />
+    <Compile Include="Migrations\201511202200143_ilogrequired.Designer.cs">
+      <DependentUpon>201511202200143_ilogrequired.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511202221164_removerecomendationname.cs" />
+    <Compile Include="Migrations\201511202221164_removerecomendationname.Designer.cs">
+      <DependentUpon>201511202221164_removerecomendationname.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Concentration.cs" />
     <Compile Include="Models\CourseSemester.cs" />
+    <Compile Include="Models\ILog.cs" />
     <Compile Include="Models\Recommendation.cs" />
     <Compile Include="Models\RecommendationRecord.cs" />
     <Compile Include="Models\Requirement.cs" />
@@ -534,6 +547,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511191900166_emptyMerge.resx">
       <DependentUpon>201511191900166_emptyMerge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511202054048_ilog.resx">
+      <DependentUpon>201511202054048_ilog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511202200143_ilogrequired.resx">
+      <DependentUpon>201511202200143_ilogrequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511202221164_removerecomendationname.resx">
+      <DependentUpon>201511202221164_removerecomendationname.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

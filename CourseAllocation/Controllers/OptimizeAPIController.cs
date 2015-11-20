@@ -21,7 +21,7 @@ namespace CourseAllocation.Controllers
         {
             using (var dbConn = new ApplicationDbContext())
             {
-                Recommendation rec = dbConn.Recommendations.First();
+               // Recommendation rec = dbConn.Recommendations.First();
                 students = dbConn.StudentPreferences.Where(m=>m.IsActive == true).Include(m => m.Courses).ToArray();
                 crssems = dbConn.CourseSemesters.Where(m => m.IsActive == true).Include(m => m.Course).Include(m => m.Semester).ToArray();
                 courses = crssems.Select(m => m.Course).Distinct().ToArray();
@@ -153,7 +153,7 @@ namespace CourseAllocation.Controllers
             rec.StudentPreferences = students;
             rec.CourseSemesters = crssems;
 
-            rec.Name = DateTime.Now;
+          //  rec.Name = DateTime.Now;
             rec.MaxClassSize = MaxClassSize;
             for (int i = 0; i < students.Length; i++)
             {

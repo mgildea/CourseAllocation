@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace CourseAllocation.Models
 {
-    public class Course
+    public class Course : ILog
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID{ get; set; }
@@ -37,6 +37,13 @@ namespace CourseAllocation.Models
         [JsonIgnore]
         public virtual ICollection<Requirement> Requirements { get; set; }
 
+
+        [Required]
+        public DateTime CreatedAt { get; set; }
+
+        [Required, ForeignKey("CreatedBy")]
+        public string CreatedBy_Id { get; set; }
+        public virtual ApplicationUser CreatedBy { get; set; }
 
         public Course()
         {
