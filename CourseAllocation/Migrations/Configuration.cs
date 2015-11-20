@@ -178,7 +178,7 @@ namespace CourseAllocation.Migrations
             //if (System.Diagnostics.Debugger.IsAttached == false)
             //    System.Diagnostics.Debugger.Launch();
 
-            var user = context.Users.FirstOrDefault(m => m.UserName == 'admin');
+            var user = context.Users.FirstOrDefault(m => m.UserName == "admin");
 
             if(user == null)
             {
