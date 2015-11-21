@@ -69,6 +69,8 @@ namespace CourseAllocation.ViewModels
 
         public bool IsFoundational { get; set; }
 
+        public bool IsCompleted { get; set; }
+
         public List<CourseViewModel> Prerequisites { get; set; }
 
 
@@ -80,6 +82,11 @@ namespace CourseAllocation.ViewModels
             IsFoundational = m.IsFoundational;
 
             Prerequisites = (m.Prerequisites == null) ? new List<CourseViewModel>() :  m.Prerequisites.Select(n => new CourseViewModel(n)).ToList();
+        }
+
+        public CourseViewModel(Course m, bool isCompleted) : this(m)
+        {
+            IsCompleted = isCompleted;
         }
     }
 }

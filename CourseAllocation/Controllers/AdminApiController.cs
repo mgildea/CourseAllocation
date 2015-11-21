@@ -37,7 +37,24 @@ namespace CourseAllocation.Controllers
 
                 var courseIds = preference.Courses.Select(m => m.ID).ToArray();
 
-                return ctx.Courses.Include(m => m.Prerequisites).ToList().Where(m => courseIds.Contains(m.ID)).Select(m => new CourseViewModel(m));
+                var viewmodels = ctx.Courses.Include(m => m.Prerequisites).ToList().Where(m => courseIds.Contains(m.ID)).Select(m => new CourseViewModel(m)).ToList();
+
+              //  var completed = ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true));
+
+
+                foreach(var completed in ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true)))
+                {
+                    var vm = viewmodels.SingleOrDefault(m => m.ID == completed.ID);
+                    if(vm != null)
+                    {
+                        viewmodels.Remove(vm);
+                    }
+
+                    viewmodels.Add(completed);
+                }
+
+
+                return viewmodels;
             }
         }
 
@@ -50,7 +67,9 @@ namespace CourseAllocation.Controllers
 
                 var ids = studentPreference.Courses.Select(n => n.ID);
 
-                studentPreference.Courses = ctx.Courses.Where(m => ids.Contains(m.ID)).ToList();
+                var completed = ctx.CompletedCourses.Where(m => m.GaTechId == studentPreference.GaTechId).Select(m => m.Course_ID);
+
+                studentPreference.Courses = ctx.Courses.Where(m => ids.Contains(m.ID) && !completed.Contains(m.ID)).ToList();
 
                 ctx.StudentPreferences.Add(studentPreference);
 

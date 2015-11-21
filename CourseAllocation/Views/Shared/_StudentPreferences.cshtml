@@ -27,7 +27,7 @@
                 <tr>
                     <td data-bind="text: Number"></td>
                     <td data-bind="text: Name"></td>
-                    <td> <span data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></span> <a href="#" data-bind="click: $parent.RemoveCourse" class="close pull-right"  ><i class="fa fa-times"></i></a></td>
+                    <td> <span data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></span><span class="pull-right text-success" data-bind="if: IsCompleted">completed</span> <a href="#" data-bind="if: !IsCompleted, click: $parent.RemoveCourse" class="close pull-right"  ><i class="fa fa-times"></i></a></td>
                 </tr>
          
             </tbody>
@@ -97,12 +97,12 @@
                     {
                         $.getJSON("/Api/Course/" + self.NewCourse(), function (data) {
 
-                           var exists = ko.utils.arrayFirst(self.Courses(), function (item) {
+                           var exists = ko.utils.arrayFirst(self._courses(), function (item) {
                                 return data.ID === item.ID;
                             })
 
                             if (!exists) {
-                                self.Courses.push(data);
+                                self._courses.push(data);
                             }
                            
                         });
@@ -112,7 +112,7 @@
                 };
 
                 self.RemoveCourse = function() {
-                    self.Courses.remove(this);
+                    self._courses.remove(this);
                 };
 
 
@@ -120,20 +120,27 @@
 
                 self.GaTechId = ko.observable('');
 
-                self.Courses = ko.observableArray();
+  
+                self._courses = ko.observableArray();
+
+                self.Courses = ko.computed(function () {
+                    return self._courses().sort(function (left, right) {
+                        return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
+                    });
+                });
 
                 self.IsPopulated = ko.computed(function () {
                     return self.GaTechId() !== '';
                 });
 
                 self.GaTechId.subscribe(function (newValue) {
-                    self.Courses.removeAll();
+                    self._courses.removeAll();
 
                     self.Query();
 
                         $.getJSON("/Api/StudentPreferences", { GaTechId: self.GaTechId() }, function (data) {
                             ko.utils.arrayForEach(data, function (item) {
-                                self.Courses.push(item);
+                                self._courses.push(item);
                             });
                         });
                 }, this);

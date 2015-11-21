@@ -234,6 +234,7 @@ namespace CourseAllocation.Migrations
                     m => m.GaTechId,
                     new StudentPreference { GaTechId = "Student" + i, IsActive = true, Courses = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList()}
                     );
+
             }
 
         }

@@ -34,9 +34,12 @@ namespace CourseAllocation.Models
 
             foreach(var entry in this.ChangeTracker.Entries().Where(m => m.Entity is ILog && (m.State == EntityState.Added || m.State == EntityState.Modified)))
             {
-                ((ILog)entry.Entity).CreatedAt = DateTime.UtcNow;
-                ((ILog)entry.Entity).CreatedBy_Id = user.Id;
 
+                if(entry.State == EntityState.Added || ( UserName != string.Empty && entry.State == EntityState.Modified))
+                {
+                    ((ILog)entry.Entity).CreatedAt = DateTime.UtcNow;
+                    ((ILog)entry.Entity).CreatedBy_Id = user.Id;
+                }
             }
 
             return base.SaveChanges();
@@ -53,6 +56,9 @@ namespace CourseAllocation.Models
 
         public DbSet<Semester> Semesters { get; set; }
         public DbSet<CourseSemester> CourseSemesters { get; set; }
+
+        public DbSet<CompletedCourse> CompletedCourses { get; set; }
+        
         public DbSet<Recommendation> Recommendations { get; set; }
 
 

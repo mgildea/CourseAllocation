@@ -33,6 +33,9 @@ namespace CourseAllocation.Models
         [JsonIgnore]
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
+        //[JsonIgnore]
+        //public virtual ICollection<CompletedCourse> CompletedCourses { get; set; }
+
 
         [JsonIgnore]
         public virtual ICollection<Requirement> Requirements { get; set; }

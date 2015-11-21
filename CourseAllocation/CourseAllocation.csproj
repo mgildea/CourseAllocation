@@ -279,8 +279,13 @@
     <Compile Include="Migrations\201511202221164_removerecomendationname.Designer.cs">
       <DependentUpon>201511202221164_removerecomendationname.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511210056396_completedcourse.cs" />
+    <Compile Include="Migrations\201511210056396_completedcourse.Designer.cs">
+      <DependentUpon>201511210056396_completedcourse.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\CompletedCourse.cs" />
     <Compile Include="Models\Concentration.cs" />
     <Compile Include="Models\CourseSemester.cs" />
     <Compile Include="Models\ILog.cs" />
@@ -556,6 +561,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511202221164_removerecomendationname.resx">
       <DependentUpon>201511202221164_removerecomendationname.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511210056396_completedcourse.resx">
+      <DependentUpon>201511210056396_completedcourse.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
