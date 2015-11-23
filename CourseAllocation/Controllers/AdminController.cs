@@ -7,6 +7,7 @@ using CourseAllocation.Models;
 
 namespace CourseAllocation.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         // GET: Admin

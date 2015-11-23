@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace CourseAllocation.Controllers
 {
+    [Authorize]
     public class StudentController : Controller
     {
         // GET: Student

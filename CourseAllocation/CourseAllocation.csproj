@@ -322,6 +322,7 @@
     <Content Include="Images\agentry7.jpg" />
     <Content Include="Images\banner-bg.jpg" />
     <Content Include="Images\doge.png" />
+    <Content Include="Images\favicon.ico" />
     <Content Include="Images\firstgen-2_0.jpg" />
     <Content Include="Images\intro-bg.jpg" />
     <Content Include="Images\ipad.png" />
@@ -379,8 +380,8 @@
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="Content\bootstrap-select.css.map" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
-    <None Include="Properties\PublishProfiles\6310.gatechprojects.com - Web Deploy.pubxml" />
     <Content Include="Scripts\bootstrap-select.js.map" />
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\i18n\defaults-ar_AR.js" />
     <Content Include="Scripts\i18n\defaults-ar_AR.min.js" />
@@ -464,8 +465,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />

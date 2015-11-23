@@ -10,6 +10,7 @@ using CourseAllocation.ViewModels;
 
 namespace CourseAllocation.Controllers
 {
+    [Authorize]
     public class AdminApiController : ApiController
     {
 
