@@ -17,7 +17,7 @@
                 <tr>
                    
                     <td colspan="3">
-                        <a href="#" class="close pull-right" data-bind="click: AddCourse"><i class="fa fa-plus"></i></a>
+                        <a href="#" class="close pull-right" data-bind="click: AddCourse" data-toggle="tooltip" data-placement="right" title="Add Course"><i class="fa fa-plus"></i></a>
                         <select class="form-control" data-bind="value: NewCourse, options: Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) {return item.ID}, optionsCaption: 'Select Course'"></select>
                     </td>
                 </tr>
@@ -27,7 +27,7 @@
                 <tr>
                     <td data-bind="text: Number"></td>
                     <td data-bind="text: Name"></td>
-                    <td> <span data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></span><span class="pull-right text-success" data-bind="if: IsCompleted">completed</span> <a href="#" data-bind="if: !IsCompleted, click: $parent.RemoveCourse" class="close pull-right"  ><i class="fa fa-times"></i></a></td>
+                    <td> <span data-bind="text: Prerequisites.map(function (obj) { return obj.Number }).join(', ')"></span><span class="pull-right text-success" data-bind="if: IsCompleted">completed</span> <a href="#" class="close pull-right" data-toggle="tooltip" data-placement="right" title="Remove Course" data-bind="if: !IsCompleted, click: $parent.RemoveCourse"  ><i class="fa fa-times"></i></a></td>
                 </tr>
          
             </tbody>

@@ -31,6 +31,8 @@ namespace CourseAllocation.ViewModels
         public string Number { get; set; }
         public string Name { get; set; }
 
+        public int StudentLimit { get; set; }
+
         public CourseSemesterViewModel(CourseSemester m)
         {
             ID = m.ID;
@@ -39,6 +41,7 @@ namespace CourseAllocation.ViewModels
             Year = m.Semester.Year;
             Number = m.Course.Number;
             Name = m.Course.Name;
+            StudentLimit = m.StudentLimit;
         }
         
     }

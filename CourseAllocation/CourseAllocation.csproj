@@ -283,6 +283,10 @@
     <Compile Include="Migrations\201511210056396_completedcourse.Designer.cs">
       <DependentUpon>201511210056396_completedcourse.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511240009065_studentlimit.cs" />
+    <Compile Include="Migrations\201511240009065_studentlimit.Designer.cs">
+      <DependentUpon>201511240009065_studentlimit.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\CompletedCourse.cs" />
@@ -563,6 +567,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511210056396_completedcourse.resx">
       <DependentUpon>201511210056396_completedcourse.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511240009065_studentlimit.resx">
+      <DependentUpon>201511240009065_studentlimit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

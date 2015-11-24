@@ -103,10 +103,12 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Semester</th>
-                            <th>Year</th>
-                            <th>Number</th>
-                            <th>Title</th>
+                            <th class="text-center">Semester</th>
+                            <th  class="text-center">Year</th>
+                            <th  class="text-center">Number</th>
+                            <th  class="text-center">Title</th>
+                            <th  class="text-center">Limit</th>
+                            <th  class="text-center"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,19 +117,27 @@
                                 <select class="form-control" data-bind="value: CourseSemesters.NewSemester, options: Semesters.Records(), optionsText: function(item) { return item.Type + ' ' + item.Year} , optionsValue: function(item) { return { Type : item.TypeValue, Year : item.Year} }, optionsCaption: 'Select Semester'"></select>
                             </td>
                             <td colspan="2">
-                                <a href="#" class="close pull-right" data-bind="click:CourseSemesters.Save" data-toggle="tooltip" data-placement="right" title="Save New Course Offering"><i class="fa fa-floppy-o"></i></a>
                                 <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select>
-                            </td>
+                                 </td>
+                            <td><input class="form-control" type="number" data-bind="value: CourseSemesters.NewLimit" />
+
+                                
+                                </td>
+                            <td><a href="#" class="close pull-right" data-bind="click:CourseSemesters.Save" data-toggle="tooltip" data-placement="right" title="Save New Course Offering"><i class="fa fa-floppy-o"></i></a>
+
+                                  </td>
                         </tr>
                     </tbody>
                     <tbody data-bind="foreach: CourseSemesters.Records()">
 
                         <tr>
-                            <td data-bind="text: Type"></td>
-                            <td data-bind="text: Year"></td>
-                            <td data-bind="text: Number"></td>
+                            <td class="text-center" data-bind="text: Type"></td>
+                            <td class="text-center" data-bind="text: Year"></td>
+                            <td class="text-center" data-bind="text: Number"></td>
                           
-                            <td> <span data-bind="text: Name"></span> <a href="#" data-bind="click: CourseSemesters.RemoveOffering" class="close pull-right"><i class="fa fa-times"></i></a></td>
+                            <td data-bind="text: Name"> </td>
+                            <td class="text-center" data-bind="text: StudentLimit"></td>
+                            <td><a href="#" data-bind="click: CourseSemesters.RemoveOffering" class="close pull-right"><i class="fa fa-times"></i></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -221,6 +231,7 @@
 
                 self.NewSemester = ko.observable('');
                 self.NewCourse = ko.observable('');
+                self.NewLimit = ko.observable('');
 
 
                 self.RemoveOffering = function () {
@@ -252,6 +263,7 @@
                         data: {
                             Course: self.NewCourse(),
                             Semester: self.NewSemester(),
+                            StudentLimit : self.NewLimit(),
                             IsActive : true
 
                         },
@@ -266,6 +278,7 @@
                         complete: function (data) {
                             self.NewSemester('');
                             self.NewCourse('');
+                            self.NewLimit('');
 
                         }
                     });
@@ -462,5 +475,30 @@
             //   // e.target // newly activated tab
             //   // e.relatedTarget // previous active tab
             //})
+
+
+            ko.bindingHandlers.numeric = {
+                init: function (element, valueAccessor) {
+                    $(element).on("keydown", function (event) {
+                        // Allow: backspace, delete, tab, escape, and enter
+                        if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
+                            // Allow: Ctrl+A
+                            (event.keyCode == 65 && event.ctrlKey === true) ||
+                            // Allow: . ,
+                            (event.keyCode == 188 || event.keyCode == 190 || event.keyCode == 110) ||
+                            // Allow: home, end, left, right
+                            (event.keyCode >= 35 && event.keyCode <= 39)) {
+                            // let it happen, don't do anything
+                            return;
+                        }
+                        else {
+                            // Ensure that it is a number and stop the keypress
+                            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                                event.preventDefault();
+                            }
+                        }
+                    });
+                }
+            };
 </script>
 

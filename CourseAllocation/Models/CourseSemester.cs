@@ -23,6 +23,9 @@ namespace CourseAllocation.Models
         [Required, DefaultValue("true")]
         public bool IsActive { get; set; }
 
+        [DefaultValue(100)]
+        public int StudentLimit { get; set; }
+
         public virtual ICollection<Recommendation> Recommendation { get; set; }
 
 
