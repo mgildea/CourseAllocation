@@ -16,8 +16,8 @@ namespace CourseAllocation.Controllers
         private CourseSemester[] crssems;
         private GRBLinExpr MAX_COURSES_PER_SEMESTER = new GRBLinExpr(2);
 
-        [HttpGet]
-        public object Optimize()
+        [HttpPost]
+        public object Optimize(string RunName)
         {
             using (var dbConn = new ApplicationDbContext())
             {
@@ -143,7 +143,7 @@ namespace CourseAllocation.Controllers
                     else
                     {
                         double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
-                        writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue);
+                        writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
                     }
                 }
                
@@ -160,10 +160,15 @@ namespace CourseAllocation.Controllers
             return null;
         }
 
-        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx, double MaxClassSize)
+        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx, double MaxClassSize, string RunName)
         {
-            System.IO.StreamWriter writer = new System.IO.StreamWriter("c:\\output.txt");
-            Recommendation rec = new Recommendation();
+            System.IO.StreamWriter writer = null;
+
+            //if (System.Diagnostics.Debugger.IsAttached)
+            //    writer = new System.IO.StreamWriter("c:\\output.txt");
+
+
+            Recommendation rec = new Recommendation() { Name = RunName };
             rec.Records = new List<RecommendationRecord>();
             rec.StudentPreferences = students;
             rec.CourseSemesters = crssems;
@@ -181,7 +186,9 @@ namespace CourseAllocation.Controllers
                             if (GRBModelData[i, j, k].Get(GRB.DoubleAttr.X) == 1)
                             {
                                 rec.Records.Add(new RecommendationRecord() { StudentPreference = students[i], CourseSemester = crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]) });
-                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+
+                                //if (System.Diagnostics.Debugger.IsAttached)
+                                //    writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                             }
                         }
                         catch (GRBException e)
@@ -192,7 +199,7 @@ namespace CourseAllocation.Controllers
             }
             ctx.Recommendations.Add(rec);
             ctx.SaveChanges();
-            writer.Close();
+          //  writer.Close();
         }
     }
 }

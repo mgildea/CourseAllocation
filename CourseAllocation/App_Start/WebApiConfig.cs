@@ -105,8 +105,8 @@ defaults: new { controller = "AdminApi", action = "Year" }
 
             config.Routes.MapHttpRoute(
       name: "Optimizer",
-      routeTemplate: "Api/Optimizer",
-      defaults: new { controller = "OptimizeApi", action = "Optimize" }
+      routeTemplate: "Api/Optimizer/{RunName}",
+      defaults: new { controller = "OptimizeApi", action = "Optimize", RunName = RouteParameter.Optional }
 
   );
 

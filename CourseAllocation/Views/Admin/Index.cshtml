@@ -5,8 +5,33 @@
 
 
 <h2 class="underline">Administration</h2>
-
+<!--
 <button class="btn btn-default pull-left" type="button" data-bind="click: optimize">Optimize</button>
+
+ Button trigger modal -->
+<button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#optimizeModal">
+    Optimize
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="optimizeModal" tabindex="-1" role="dialog" aria-labelledby="optimizeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="optimizeModalLabel">Enter a name to help identify this run</h4>
+            </div>
+            <div class="modal-body">
+               <input type="text" class="form-control" placeholder="Run Name" data-bind="value: RunName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bind="click: optimize" class="btn btn-primary">Run Optimization</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <ul class="nav nav-tabs" role="tablist">
     <li class="active pull-right"><a data-target="#semesters" data-toggle="tab">Semesters</a></li>
@@ -107,7 +132,7 @@
                             <th  class="text-center">Year</th>
                             <th  class="text-center">Number</th>
                             <th  class="text-center">Title</th>
-                            <th  class="text-center">Limit</th>
+                            <th  class="text-center">Student Limit</th>
                             <th  class="text-center"></th>
                         </tr>
                     </thead>
@@ -119,7 +144,7 @@
                             <td colspan="2">
                                 <select class="form-control" data-bind="value: CourseSemesters.NewCourse, options: Courses.Records(), optionsText: function(item) { return item.Number + ' - ' + item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Course'"></select>
                                  </td>
-                            <td><input class="form-control" type="number" data-bind="value: CourseSemesters.NewLimit" />
+                            <td><input class="form-control" type="number" data-bind="value: CourseSemesters.NewLimit" placeholder="Student Limit" />
 
                                 
                                 </td>
@@ -448,14 +473,25 @@
 
 
 
-
+                self.RunName = ko.observable('');
 
                 self.optimize = function () {
+                    SPIN();
+                    $('#optimizeModal').modal('hide');
                     $.ajax({
-                        url: "/Api/Optimizer",
-                        method: "GET",
+                        url: "/Api/Optimizer/" + self.RunName(),
+                        method: "POST",
+                   
                         success: function (data) {
-                            alert("Test");
+                            
+                            
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            
+                        },
+                        complete: function (data) {
+                            self.RunName('');
+                            SPIN();
                         }
                     });
                 }
@@ -469,36 +505,7 @@
                 $('[data-toggle="tooltip"]').tooltip()
             });
 
-            //$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-
-            //    ViewModel.Students().Selected('');
-            //   // e.target // newly activated tab
-            //   // e.relatedTarget // previous active tab
-            //})
 
 
-            ko.bindingHandlers.numeric = {
-                init: function (element, valueAccessor) {
-                    $(element).on("keydown", function (event) {
-                        // Allow: backspace, delete, tab, escape, and enter
-                        if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
-                            // Allow: Ctrl+A
-                            (event.keyCode == 65 && event.ctrlKey === true) ||
-                            // Allow: . ,
-                            (event.keyCode == 188 || event.keyCode == 190 || event.keyCode == 110) ||
-                            // Allow: home, end, left, right
-                            (event.keyCode >= 35 && event.keyCode <= 39)) {
-                            // let it happen, don't do anything
-                            return;
-                        }
-                        else {
-                            // Ensure that it is a number and stop the keypress
-                            if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
-                                event.preventDefault();
-                            }
-                        }
-                    });
-                }
-            };
 </script>
 

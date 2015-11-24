@@ -27,7 +27,9 @@ namespace CourseAllocation
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/bootstrap-select.min.js",
                       "~/Scripts/selectPicker.js",
-                      "~/Scripts/respond.js"));
+                      "~/Scripts/respond.js",
+                      "~/Scripts/spin.js", 
+                      "~/Scripts/site.js"));
 
             //bundling angular does not currently work due to the $scope syntax
             //bundles.Add(new ScriptBundle("~/bundles/angularjs").Include(

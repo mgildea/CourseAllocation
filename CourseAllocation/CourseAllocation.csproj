@@ -287,6 +287,10 @@
     <Compile Include="Migrations\201511240009065_studentlimit.Designer.cs">
       <DependentUpon>201511240009065_studentlimit.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511241740091_recomendationName.cs" />
+    <Compile Include="Migrations\201511241740091_recomendationName.Designer.cs">
+      <DependentUpon>201511241740091_recomendationName.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\CompletedCourse.cs" />
@@ -454,6 +458,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\selectPicker.js" />
+    <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\spin.js" />
+    <Content Include="Scripts\spin.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -570,6 +577,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511240009065_studentlimit.resx">
       <DependentUpon>201511240009065_studentlimit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511241740091_recomendationName.resx">
+      <DependentUpon>201511241740091_recomendationName.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
