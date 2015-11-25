@@ -176,7 +176,7 @@ namespace CourseAllocation.Controllers
             System.IO.StreamWriter writer = null;
 
             //if (System.Diagnostics.Debugger.IsAttached)
-            writer = new System.IO.StreamWriter("c:\\output.txt");
+            //writer = new System.IO.StreamWriter("c:\\output.txt");
 
 
             Recommendation rec = new Recommendation() { Name = RunName };
@@ -199,7 +199,7 @@ namespace CourseAllocation.Controllers
                                 rec.Records.Add(new RecommendationRecord() { StudentPreference = students[i], CourseSemester = crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]) });
 
                                 //if (System.Diagnostics.Debugger.IsAttached)
-                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                              //  writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                             }
                         }
                         catch (GRBException e)
@@ -210,7 +210,7 @@ namespace CourseAllocation.Controllers
             }
             ctx.Recommendations.Add(rec);
             ctx.SaveChanges();
-            writer.Close();
+           // writer.Close();
         }
     }
 }

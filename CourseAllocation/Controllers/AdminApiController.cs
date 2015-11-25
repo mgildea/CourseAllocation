@@ -18,10 +18,25 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                return ctx.Recommendations.Include(m => m.CreatedBy).Select(m => new OptimizationViewModel(m));
+                return ctx.Recommendations.Include(m => m.CreatedBy).ToList().Select(m => new OptimizationViewModel(m));
             }
         }
 
+
+        [HttpGet]
+        public IEnumerable<CourseSemesterViewModel> OptimizationOfferings(int Recomendation_ID)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var recomendation = ctx.Recommendations
+                    .Include(m => m.CourseSemesters.Select(n => n.Course))
+                    .Include(m => m.CourseSemesters.Select(n => n.Semester))
+                    .Single(m => m.ID == Recomendation_ID);
+
+                return recomendation
+                    .CourseSemesters.ToList().Select(m => new CourseSemesterViewModel(m));
+            }
+        }
 
 
         [HttpGet]

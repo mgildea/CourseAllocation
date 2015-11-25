@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -22,10 +23,13 @@ namespace CourseAllocation.Models
 
         public int MissingSeats { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<CourseSemester> CourseSemesters { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<RecommendationRecord> Records { get; set; }
 
         [Required]

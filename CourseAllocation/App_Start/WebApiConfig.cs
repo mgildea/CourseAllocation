@@ -26,6 +26,23 @@ namespace CourseAllocation
 
 
             config.Routes.MapHttpRoute(
+      name: "QueryOptimizations",
+      routeTemplate: "Api/Optimizations",
+      defaults: new { controller = "AdminApi", action = "Optimizations" }
+
+  );
+
+
+            config.Routes.MapHttpRoute(
+ name: "QueryOptimizationOfferings",
+ routeTemplate: "Api/OptimizationOfferings/{Recomendation_ID}",
+ defaults: new { controller = "AdminApi", action = "OptimizationOfferings", Recomendation_ID = RouteParameter.Optional }
+
+);
+
+
+
+            config.Routes.MapHttpRoute(
           name: "QueryCourseSemesters",
           routeTemplate: "Api/CourseSemesters",
           defaults: new { controller = "AdminApi", action = "CourseSemesters" }
