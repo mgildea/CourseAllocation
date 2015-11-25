@@ -18,7 +18,9 @@ namespace CourseAllocation.Models
         //[Required]
         //public DateTime Name { get; set; }
         
-        public Double MaxClassSize { get; set; }
+       // public Double MaxClassSize { get; set; }
+
+        public int MissingSeats { get; set; }
 
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 

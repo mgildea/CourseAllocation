@@ -13,6 +13,16 @@ namespace CourseAllocation.Controllers
     [Authorize]
     public class AdminApiController : ApiController
     {
+        [HttpGet]
+        public IEnumerable<OptimizationViewModel> Optimizations()
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                return ctx.Recommendations.Include(m => m.CreatedBy).Select(m => new OptimizationViewModel(m));
+            }
+        }
+
+
 
         [HttpGet]
         public IEnumerable<string> Students()

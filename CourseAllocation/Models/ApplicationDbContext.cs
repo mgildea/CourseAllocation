@@ -16,7 +16,7 @@ namespace CourseAllocation.Models
         public ApplicationDbContext()
             : base("CourseAllocation", throwIfV1Schema: false)
         {
-           
+        
         }
 
         public static ApplicationDbContext Create()

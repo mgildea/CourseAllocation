@@ -156,7 +156,7 @@ namespace CourseAllocation.Controllers
                 model.Optimize();
 
                 int status = model.Get(GRB.IntAttr.Status);
-                double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
+                int objectiveValue = Convert.ToInt32(model.Get(GRB.DoubleAttr.ObjVal));
                 writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
 
                 model.Dispose();
@@ -171,7 +171,7 @@ namespace CourseAllocation.Controllers
             return null;
         }
 
-        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx, double MaxClassSize, string RunName)
+        private static void writeResults(GRBVar[,,] GRBModelData, StudentPreference[] students, Course[] courses, Semester[] sems, CourseSemester[] crssems, ApplicationDbContext ctx, int ObjectiveValue, string RunName)
         {
             System.IO.StreamWriter writer = null;
 
@@ -185,7 +185,7 @@ namespace CourseAllocation.Controllers
             rec.CourseSemesters = crssems;
 
             //  rec.Name = DateTime.Now;
-            rec.MaxClassSize = MaxClassSize;
+            rec.MissingSeats = ObjectiveValue;
             for (int i = 0; i < students.Length; i++)
             {
                 for (int j = 0; j < courses.Length; j++)

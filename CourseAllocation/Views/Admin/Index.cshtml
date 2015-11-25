@@ -187,14 +187,34 @@
     </div>
 
     <div class="tab-pane fade" id="results">
-        results
+        <div class="row">
+            <div class="col-md-2">
+                <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name} , optionsValue: function(item) { return { ID : item.ID }}, optionsCaption: 'Select Optimization'"></select>
+
+            </div>
+        </div>
     </div>
-</div>
 
 
-@Html.Partial("_StudentPreferences")
+        @Html.Partial("_StudentPreferences")
 
         <script type="text/javascript">
+
+            function ResultsViewModel() {
+                var self = this;
+
+                self.SelectedOptimization = ko.observable('');
+
+                self._optimizationRecords = ko.observableArray('');
+
+                self.OptimizationRecords = ko.computed(function () {
+                    return self._optimizationRecords().sort(function (left, right) {
+                        return (left.Name == right.Name) ? 0 : (left.Name < right.Name ? -1 : 1);
+                    });
+                });
+
+            }
+
 
 
 
@@ -225,7 +245,7 @@
                     if (typeof newValue !== 'undefined') {
                         self.StudentPreferences.GaTechId(newValue);
                     }
-                    else{
+                    else {
                         self.StudentPreferences.GaTechId('');
                     }
                 }, this);
@@ -261,7 +281,7 @@
 
                 self.RemoveOffering = function () {
                     var obj = this;
-                    
+
                     $.ajax({
                         type: "POST",
                         url: "/Api/RemoveCourseSemester/" + this.ID,
@@ -288,8 +308,8 @@
                         data: {
                             Course: self.NewCourse(),
                             Semester: self.NewSemester(),
-                            StudentLimit : self.NewLimit(),
-                            IsActive : true
+                            StudentLimit: self.NewLimit(),
+                            IsActive: true
 
                         },
                         success: function (data) {
@@ -481,13 +501,13 @@
                     $.ajax({
                         url: "/Api/Optimizer/" + self.RunName(),
                         method: "POST",
-                   
+
                         success: function (data) {
-                            
-                            
+                            alert("the optimization was succesfully run");
+
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            
+                            alert("An error occured during optimization");
                         },
                         complete: function (data) {
                             self.RunName('');
@@ -507,5 +527,5 @@
 
 
 
-</script>
+        </script>
 
