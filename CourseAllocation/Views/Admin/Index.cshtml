@@ -204,6 +204,15 @@
                     <select class="form-control" data-bind="value: Results.SelectedOffering, options: Results.OfferingRecords(), optionsText: function(item) { return item.Type + ' ' + item.Year + ' - ' + item.Number} , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Offering'"></select>
                 </span>
             </div>
+            <div class="col-md-3">
+
+                <span data-bind="if : Results.SelectedOffering(), css:Results.OptimizationMissingSeatsCss">
+                    Enrolled Students : <span data-bind="text: Results.CourseMissingSeats"></span> / <span data-bind="text: Results.CourseMissingSeats"></span>
+                </span>
+
+
+            </div>
+
         </div>
     </div>
 </div>
@@ -232,6 +241,9 @@
         self.SelectedOptimization = ko.observable('');
 
         self.OptimizationMissingSeats = ko.observable('');
+
+        self.CourseMissingSeats = ko.observable('XX');
+
         self.OptimizationMissingSeatsCss = ko.pureComputed(function () {
             return this.OptimizationMissingSeats() > 0 ? "text-danger" : "text-success";
         }, self);
@@ -257,16 +269,14 @@
             if (typeof newValue === 'undefined') {
                 self._offeringRecords.removeAll();
             }
-            else
-            {
-                ko.utils.arrayForEach(self._optimizationRecords(), function(item) {
-                    if(item.ID == self.SelectedOptimization())
-                    {
+            else {
+                ko.utils.arrayForEach(self._optimizationRecords(), function (item) {
+                    if (item.ID == self.SelectedOptimization()) {
                         self.OptimizationMissingSeats(item.MissingSeats);
                     }
                 });
 
-                
+
                 $.getJSON("/Api/OptimizationOfferings/" + self.SelectedOptimization(), function (data) {
                     self._offeringRecords.removeAll();
 
