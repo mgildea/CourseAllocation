@@ -33,7 +33,7 @@ namespace CourseAllocation.Controllers
                 GRBEnv env = new GRBEnv("mip1.log");
                 GRBModel model = new GRBModel(env);
                 model.Set(GRB.StringAttr.ModelName, "Course Optimizer");
-                //GRBVar X = model.AddVar(0, GRB.INFINITY, 0, GRB.INTEGER, "X");
+                GRBVar[,] slacks = new GRBVar[courses.Length, sems.Length];
 
                 //Assignment of student, course, semester
                 GRBVar[,,] CourseAllocation = new GRBVar[students.Length, courses.Length, sems.Length];
@@ -54,7 +54,6 @@ namespace CourseAllocation.Controllers
                 model.Update();
 
                 GRBLinExpr constMinStudent = new GRBLinExpr();
-                //GRBLinExpr constMaxStudCrsSem;
 
                 //MUST TAKE DESIRED COURSE ONLY ONCE
                 for (int i = 0; i < students.Length; i++)
@@ -72,6 +71,7 @@ namespace CourseAllocation.Controllers
                             model.AddConstr(constStudentDesiredCourses == 1, sStudentDesiredCourses);
                         }
                     }
+
                     //MAX COURSES PER SEMESTER
                     for (int k = 0; k < sems.Length; k++)
                     {
@@ -84,30 +84,38 @@ namespace CourseAllocation.Controllers
                     }
 
                     //PREREQUISITES
-                    //for (int j = 0; j < courses.Length; j++)
-                    //{
-                    //    if (students[i].PreferedCourses.Select(m => m.ID).Contains(courses[j].ID))
+                    //    GRBVar[] PreReq = new GRBVar[students[i].Courses.Count];
+                    //    double[] weight = new double[students[i].Courses.Count];
+                    //    int count = 0;
+                    //    for (int j = 0; j < courses.Length;j++)
                     //    {
-                    //        int prereq = courses.prerequisite(j + 1) - 1;
-                    //        if (prereq > 0)
+                    //        if (students[i].Courses.Contains(courses[j]))
                     //        {
-                    //            constpostReq = new GRBLinExpr();
-                    //            constpreReq = new GRBLinExpr();
-                    //            for (int kreq = 0; kreq < sems.Length; kreq++)
+                    //            if (courses[j].PrerequisiteFor.Count > 0)
                     //            {
-                    //                if (sems.courseOffered(prereq, kreq++))
-                    //                    constpostReq.AddTerm(kreq + 1, CourseAllocation[i, prereq, kreq]);
+                    //                PreReq[count] = model.AddVar(0, 2, 1, GRB.INTEGER, "Student." + students[i].GaTechId + "-PrerequisiteCourse." + courses[j].Name);
+                    //                weight[count] = 2;
                     //            }
-                    //            for (int k = 0; k < sems.Length; k++)
+                    //            else
                     //            {
-                    //                if (sems.courseOffered(j, k))
-                    //                    constpreReq.AddTerm(1, CourseAllocation[i, j, k]);
+                    //                PreReq[count] = model.AddVar(0, 1, 1, GRB.INTEGER, "Student." + students[i].GaTechId + "-PrerequisiteCourse." + courses[j].Name);
+                    //                weight[count] = 1;
                     //            }
-                    //            model.AddConstr(constpreReq, GRB.LESS_EQUAL, constpostReq, "PreRequisiteCourse." + j + 1 + "_Student." + i + 1);
+                    //                count++;
                     //        }
+                    //        //model.AddConstr(PreReq,GRB., constpostReq, "PreRequisiteCourse." + j + 1 + "_Student." + i + 1);
                     //    }
-                    //}
+                    //    model.AddSOS(PreReq, weight, GRB.SOS_TYPE1);
                 }
+
+                for (int k = 0; k < sems.Length; k++)
+                {
+                    for (int j = 0; j < courses.Length; j++)
+                    {
+                        slacks[j, k] = model.AddVar(0, GRB.INFINITY, 0, GRB.INTEGER, sems[k].Type.ToString() + "." + sems[k].Year.ToString() + "." + courses[j].Name + ".Slacks");
+                    }
+                }
+                model.Update();
 
                 //ASSIGN MAX STUDENTS PER COURSE/SEMESTER 
                 for (int k = 0; k < sems.Length; k++)
@@ -121,32 +129,35 @@ namespace CourseAllocation.Controllers
                             {
                                 constMaxStudCrsSem.AddTerm(1.0, CourseAllocation[i, j, k]);
                             }
-                            //String sMaxStudentsCourseSem = "maxStudentsPerCourse." + j + "_Semester." + k;
+                            constMaxStudCrsSem.AddTerm(-1.0, slacks[j, k]);
                             model.AddConstr(constMaxStudCrsSem <= crssems.Single(m => m.Course.ID == courses[j].ID && m.Semester.Type == sems[k].Type && m.Semester.Year == sems[k].Year).StudentLimit, sems[k].Type.ToString() + "." + sems[k].Year.ToString() + "." + courses[j].Name);
                         }
                     }
                 }
 
+                GRBVar totSlack = model.AddVar(0, GRB.INFINITY, 0, GRB.INTEGER, "totSlack");
+                GRBLinExpr lhs = new GRBLinExpr();
+                lhs.AddTerm(-1.0, totSlack);
+                for (int j = 0; j < courses.Length; j++)
+                {
+                    for (int k = 0; k < sems.Length; k++)
+                    {
+                        lhs.AddTerm(1.0, slacks[j, k]);
+                    }
+                }
+                model.Update();
+                model.AddConstr(lhs, GRB.EQUAL, 0, "totSlack");
+
+                // Objective: minimize the total slack
+                GRBLinExpr obj = new GRBLinExpr();
+                obj.AddTerm(1.0, totSlack);
+                model.SetObjective(obj);
+
                 model.Optimize();
 
                 int status = model.Get(GRB.IntAttr.Status);
-                if (GRB.Status.INFEASIBLE == status)
-                {
-                    int origVars = model.Get(GRB.IntAttr.NumVars);
-                    model.FeasRelax(0, false, false, true);
-                    model.Optimize();
-                    status = model.Get(GRB.IntAttr.Status);
-                    if (status == GRB.Status.INFEASIBLE)
-                    {
-
-                    }
-                    else
-                    {
-                        double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
-                        writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
-                    }
-                }
-               
+                double objectiveValue = model.Get(GRB.DoubleAttr.ObjVal);
+                writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
 
                 model.Dispose();
                 env.Dispose();
@@ -165,7 +176,7 @@ namespace CourseAllocation.Controllers
             System.IO.StreamWriter writer = null;
 
             //if (System.Diagnostics.Debugger.IsAttached)
-            //    writer = new System.IO.StreamWriter("c:\\output.txt");
+            writer = new System.IO.StreamWriter("c:\\output.txt");
 
 
             Recommendation rec = new Recommendation() { Name = RunName };
@@ -188,7 +199,7 @@ namespace CourseAllocation.Controllers
                                 rec.Records.Add(new RecommendationRecord() { StudentPreference = students[i], CourseSemester = crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]) });
 
                                 //if (System.Diagnostics.Debugger.IsAttached)
-                                //    writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                             }
                         }
                         catch (GRBException e)
@@ -199,7 +210,7 @@ namespace CourseAllocation.Controllers
             }
             ctx.Recommendations.Add(rec);
             ctx.SaveChanges();
-          //  writer.Close();
+            writer.Close();
         }
     }
 }
