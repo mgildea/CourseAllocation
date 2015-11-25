@@ -291,6 +291,10 @@
     <Compile Include="Migrations\201511241740091_recomendationName.Designer.cs">
       <DependentUpon>201511241740091_recomendationName.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511251546212_missingstudents.cs" />
+    <Compile Include="Migrations\201511251546212_missingstudents.Designer.cs">
+      <DependentUpon>201511251546212_missingstudents.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\CompletedCourse.cs" />
@@ -581,6 +585,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511241740091_recomendationName.resx">
       <DependentUpon>201511241740091_recomendationName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511251546212_missingstudents.resx">
+      <DependentUpon>201511251546212_missingstudents.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>
