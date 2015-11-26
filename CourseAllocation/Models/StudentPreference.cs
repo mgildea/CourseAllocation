@@ -13,8 +13,10 @@ namespace CourseAllocation.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        [Required]
+        [Required, ForeignKey("Student")]
         public string GaTechId { get; set; }
+
+        public Student Student { get; set; }
 
         [Required, DefaultValue("true")]
         public bool IsActive { get; set; }

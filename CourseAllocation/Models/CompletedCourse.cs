@@ -9,8 +9,10 @@ namespace CourseAllocation.Models
 {
     public class CompletedCourse
     {
-        [Required, Column(Order = 0), Key]
+        [Required, Column(Order = 0), Key, ForeignKey("Student")]
         public string GaTechId { get; set; }
+
+        public Student Student { get; set; }
 
         [Required, Column(Order = 1), Key, ForeignKey("Course")]
         public int Course_ID { get; set; }

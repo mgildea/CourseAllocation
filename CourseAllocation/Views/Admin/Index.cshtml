@@ -30,7 +30,7 @@
 </div>
 
 
-<ul class="nav nav-tabs" role="tablist">
+<ul class="nav nav-tabs" role="tablist" id="admintabs">
     <li class="active pull-right"><a data-target="#semesters" data-toggle="tab">Semesters</a></li>
     <li class="pull-right"><a data-target="#courses" data-toggle="tab">Courses</a></li>
     <li class="pull-right"><a data-target="#courseSemesters" data-toggle="tab">Course Offerings</a></li>
@@ -40,7 +40,7 @@
 </ul>
 
 
-<div class="tab-content">
+<div class="tab-content" >
 
     <div class="tab-pane fade in active" id="semesters">
 
@@ -597,7 +597,9 @@
                 method: "POST",
 
                 success: function (data) {
-                    alert("the optimization was succesfully run");
+                    //alert("the optimization was succesfully run");
+                    $('#admintabs a[href="#results"]').tab('show');
+                    self.Results.Query();
 
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {

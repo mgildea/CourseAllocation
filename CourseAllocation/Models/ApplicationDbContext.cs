@@ -46,6 +46,8 @@ namespace CourseAllocation.Models
         }
 
 
+        public DbSet<Student> Students { get; set; }
+
         public DbSet<Requirement> Requirements { get; set; }
         public DbSet<Concentration> Concentrations { get; set; }
         
