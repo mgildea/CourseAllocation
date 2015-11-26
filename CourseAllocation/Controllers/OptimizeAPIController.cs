@@ -23,6 +23,13 @@ namespace CourseAllocation.Controllers
             {
                 // Recommendation rec = dbConn.Recommendations.First();
                 students = dbConn.StudentPreferences.Where(m => m.IsActive == true).Include(m => m.Courses).ToArray();
+
+                //int[] studCompleteCourses = new int[students.Length];
+                //for (int i = 0; i < students.Length; i++)
+                //{
+                //    String Id = students[i].GaTechId;
+                //    studCompleteCourses[i] = dbConn.CompletedCourses.Count(m => m.GaTechId == Id);
+                //}
                 crssems = dbConn.CourseSemesters.Where(m => m.IsActive == true).Include(m => m.Course).Include(m => m.Semester).ToArray();
                 courses = crssems.Select(m => m.Course).Distinct().ToArray();
                 sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m => m.Year).ToArray();
@@ -60,7 +67,7 @@ namespace CourseAllocation.Controllers
                 {
                     for (int j = 0; j < courses.Length; j++)
                     {
-                        if (students[i].Courses.Contains(courses[j]))
+                        if (students[i].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
                         {
                             GRBLinExpr constStudentDesiredCourses = 0.0;
                             for (int k = 0; k < sems.Length; k++)
@@ -77,8 +84,10 @@ namespace CourseAllocation.Controllers
                     {
                         GRBLinExpr constMaxPerSem = 0.0;
                         for (int j = 0; j < courses.Length; j++)
-                            constMaxPerSem.AddTerm(1, CourseAllocation[i, j, k]);
-
+                        {
+                            if (!completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
+                                constMaxPerSem.AddTerm(1, CourseAllocation[i, j, k]);
+                        }
                         String sCourseSem = "maxCourseStudent." + i + 1 + "_Semester." + k + 1;
                         model.AddConstr(constMaxPerSem <= MAX_COURSES_PER_SEMESTER, sCourseSem);
                     }
@@ -108,6 +117,20 @@ namespace CourseAllocation.Controllers
                     //    model.AddSOS(PreReq, weight, GRB.SOS_TYPE1);
                 }
 
+                
+                //for (int j=0;j<courses.Length;j++)
+                //{
+                //    for (int i=0;i<students.Length-1;i++)
+                //    {
+                //        GRBLinExpr Seniority = 0;
+                //        for (int k=0; k < sems.Length; k++)
+                //        {
+                //            Seniority.AddTerm(1.0, courses[i, j, k]);
+                //        }
+                //    }
+                //}
+
+             
                 for (int k = 0; k < sems.Length; k++)
                 {
                     for (int j = 0; j < courses.Length; j++)
@@ -116,6 +139,22 @@ namespace CourseAllocation.Controllers
                     }
                 }
                 model.Update();
+
+                //SENIORITY
+                //StudentPreference[] sortedStudents = new StudentPreference[students.Length];
+                //for (int j = 0; j < courses.Length; j++)
+                //{
+                //    for (int i = 0; i < sortedStudents.Length-1; i++)
+                //    {
+                //        GRBLinExpr​ seniority = 0.0;
+                //        for (int k = 0; k < sems.Length;k++)
+                //        {
+                //            seniority​.AddTerm(​1.0​, CourseAllocation[i, j, k]);
+                //            seniority​.AddTerm(-1.0, CourseAllocation​[i, j, k]);
+                //        }
+                //        model.AddConstr(seniority, GRB.GREATER_EQUAL, 0, "Seniority for Student." + students[i] + "_Course." + courses[j]);
+                //    }
+                //}
 
                 //ASSIGN MAX STUDENTS PER COURSE/SEMESTER 
                 for (int k = 0; k < sems.Length; k++)
@@ -127,7 +166,8 @@ namespace CourseAllocation.Controllers
                             GRBLinExpr constMaxStudCrsSem = 0.0;
                             for (int i = 0; i < students.Length; i++)
                             {
-                                constMaxStudCrsSem.AddTerm(1.0, CourseAllocation[i, j, k]);
+                                if (!completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
+                                    constMaxStudCrsSem.AddTerm(1.0, CourseAllocation[i, j, k]);
                             }
                             constMaxStudCrsSem.AddTerm(-1.0, slacks[j, k]);
                             model.AddConstr(constMaxStudCrsSem <= crssems.Single(m => m.Course.ID == courses[j].ID && m.Semester.Type == sems[k].Type && m.Semester.Year == sems[k].Year).StudentLimit, sems[k].Type.ToString() + "." + sems[k].Year.ToString() + "." + courses[j].Name);
@@ -156,9 +196,19 @@ namespace CourseAllocation.Controllers
                 model.Optimize();
 
                 int status = model.Get(GRB.IntAttr.Status);
-                int objectiveValue = Convert.ToInt32(model.Get(GRB.DoubleAttr.ObjVal));
-                writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
+                if (GRB.Status.INFEASIBLE == status)
+                {
+                    int origVars = model.Get(GRB.IntAttr.NumVars);
+                    model.FeasRelax(0, false, false, true);
+                    model.Optimize();
+                }
 
+                status = model.Get(GRB.IntAttr.Status);
+                if (status == GRB.Status.OPTIMAL)
+                {
+                    int objectiveValue = Convert.ToInt32(model.Get(GRB.DoubleAttr.ObjVal));
+                    writeResults(CourseAllocation, students, courses, sems, crssems, dbConn, objectiveValue, RunName);
+                }
                 model.Dispose();
                 env.Dispose();
 
@@ -176,7 +226,7 @@ namespace CourseAllocation.Controllers
             System.IO.StreamWriter writer = null;
 
             //if (System.Diagnostics.Debugger.IsAttached)
-            //writer = new System.IO.StreamWriter("c:\\output.txt");
+            writer = new System.IO.StreamWriter("c:\\output.txt");
 
 
             Recommendation rec = new Recommendation() { Name = RunName };
@@ -199,7 +249,7 @@ namespace CourseAllocation.Controllers
                                 rec.Records.Add(new RecommendationRecord() { StudentPreference = students[i], CourseSemester = crssems.Single(m => m.Course == courses[j] && m.Semester == sems[k]) });
 
                                 //if (System.Diagnostics.Debugger.IsAttached)
-                              //  writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
+                                writer.WriteLine(students[i].GaTechId + " taking Course: " + courses[j].Number + ": " + courses[j].Name + " in Semester: " + sems[k].Type.ToString() + " " + sems[k].Year.ToString());
                             }
                         }
                         catch (GRBException e)
@@ -210,7 +260,7 @@ namespace CourseAllocation.Controllers
             }
             ctx.Recommendations.Add(rec);
             ctx.SaveChanges();
-           // writer.Close();
+            writer.Close();
         }
     }
 }
