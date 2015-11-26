@@ -11,6 +11,7 @@ namespace CourseAllocation.Controllers
     public class OptimizeApiController : ApiController
     {
         private StudentPreference[] students;
+        private Student[] stud;
         private Course[] courses;
         private Semester[] sems;
         private CourseSemester[] crssems;
@@ -20,16 +21,8 @@ namespace CourseAllocation.Controllers
         public object Optimize(string RunName)
         {
             using (var dbConn = new ApplicationDbContext())
-            {
-                // Recommendation rec = dbConn.Recommendations.First();
+            { 
                 students = dbConn.StudentPreferences.Where(m => m.IsActive == true).Include(m => m.Courses).ToArray();
-
-                //int[] studCompleteCourses = new int[students.Length];
-                //for (int i = 0; i < students.Length; i++)
-                //{
-                //    String Id = students[i].GaTechId;
-                //    studCompleteCourses[i] = dbConn.CompletedCourses.Count(m => m.GaTechId == Id);
-                //}
                 crssems = dbConn.CourseSemesters.Where(m => m.IsActive == true).Include(m => m.Course).Include(m => m.Semester).ToArray();
                 courses = crssems.Select(m => m.Course).Distinct().ToArray();
                 sems = crssems.Select(m => m.Semester).Distinct().OrderBy(m => m.Type).OrderBy(m => m.Year).ToArray();
@@ -115,21 +108,7 @@ namespace CourseAllocation.Controllers
                         }
                     }
                 }
-
-                
-                //for (int j=0;j<courses.Length;j++)
-                //{
-                //    for (int i=0;i<students.Length-1;i++)
-                //    {
-                //        GRBLinExpr Seniority = 0;
-                //        for (int k=0; k < sems.Length; k++)
-                //        {
-                //            Seniority.AddTerm(1.0, courses[i, j, k]);
-                //        }
-                //    }
-                //}
-
-             
+            
                 for (int k = 0; k < sems.Length; k++)
                 {
                     for (int j = 0; j < courses.Length; j++)
@@ -141,19 +120,30 @@ namespace CourseAllocation.Controllers
 
                 //SENIORITY
                 //StudentPreference[] sortedStudents = new StudentPreference[students.Length];
-                //for (int j = 0; j < courses.Length; j++)
-                //{
-                //    for (int i = 0; i < sortedStudents.Length-1; i++)
-                //    {
-                //        GRBLinExpr​ seniority = 0.0;
-                //        for (int k = 0; k < sems.Length;k++)
-                //        {
-                //            seniority​.AddTerm(​1.0​, CourseAllocation[i, j, k]);
-                //            seniority​.AddTerm(-1.0, CourseAllocation​[i, j, k]);
-                //        }
-                //        model.AddConstr(seniority, GRB.GREATER_EQUAL, 0, "Seniority for Student." + students[i] + "_Course." + courses[j]);
-                //    }
-                //}
+                for (int j = 0; j < courses.Length; j++)
+                {
+                    for (int i = 0; i < students.Length - 1; i++)
+                    {
+                        if (students[i].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
+                        {
+                            for (int n = i + 1; n < students.Length; n++)
+                            {
+                                if (students[n].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[n].GaTechId && courses[j].ID == m.Course_ID))
+                                {
+                                    GRBLinExpr​ seniority = 0.0;
+                                    for (int k = 0; k < sems.Length; k++)
+                                    {
+                                        seniority​.AddTerm(1.0, CourseAllocation[i, j, k]);
+                                        seniority​.AddTerm(-1.0, CourseAllocation​[n, j, k]);
+                                    }
+                                    model.AddConstr(seniority, GRB.GREATER_EQUAL, 0, "Seniority for Student." + students[i] + "_Course." + courses[j]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                model.Update();
 
                 //ASSIGN MAX STUDENTS PER COURSE/SEMESTER 
                 for (int k = 0; k < sems.Length; k++)
