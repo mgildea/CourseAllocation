@@ -93,28 +93,27 @@ namespace CourseAllocation.Controllers
                     }
 
                     //PREREQUISITES
-                    //    GRBVar[] PreReq = new GRBVar[students[i].Courses.Count];
-                    //    double[] weight = new double[students[i].Courses.Count];
-                    //    int count = 0;
-                    //    for (int j = 0; j < courses.Length;j++)
-                    //    {
-                    //        if (students[i].Courses.Contains(courses[j]))
-                    //        {
-                    //            if (courses[j].PrerequisiteFor.Count > 0)
-                    //            {
-                    //                PreReq[count] = model.AddVar(0, 2, 1, GRB.INTEGER, "Student." + students[i].GaTechId + "-PrerequisiteCourse." + courses[j].Name);
-                    //                weight[count] = 2;
-                    //            }
-                    //            else
-                    //            {
-                    //                PreReq[count] = model.AddVar(0, 1, 1, GRB.INTEGER, "Student." + students[i].GaTechId + "-PrerequisiteCourse." + courses[j].Name);
-                    //                weight[count] = 1;
-                    //            }
-                    //                count++;
-                    //        }
-                    //        //model.AddConstr(PreReq,GRB., constpostReq, "PreRequisiteCourse." + j + 1 + "_Student." + i + 1);
-                    //    }
-                    //    model.AddSOS(PreReq, weight, GRB.SOS_TYPE1);
+                    for (int j=0; j < courses.Length;j++)
+                    {
+                        if (!completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
+                        {
+                            Course[] PreReq = courses[j].Prerequisites.ToArray();
+                            for (int p = 0; p < PreReq.Length; p++)
+                            {
+                                GRBLinExpr PreReqExp = 0.0;
+                                for (int k1 = 0; k1 < sems.Length - 1; k1++)
+                                {
+                                    for (int k = 0; k < k1; k++)
+                                    {
+                                        int PreReqIndex = Array.IndexOf(courses, PreReq[p]);
+                                        PreReqExp.AddTerm(1.0, CourseAllocation[i, j, k + 1]);
+                                        PreReqExp.AddTerm(-1.0, CourseAllocation[i, PreReqIndex, k]);
+                                    }
+                                }
+                                model.AddConstr(PreReqExp, GRB.LESS_EQUAL, 0, "Student." + students[i].GaTechId + "_PreReq." + PreReq[p].Name + "_ForCourse." + courses[j].Name);
+                            }
+                        }
+                    }
                 }
 
                 
