@@ -22,9 +22,9 @@ namespace CourseAllocation.Models
         public bool IsActive { get; set; }
 
 
-        public ICollection<Course> Courses { get; set; }
+        public virtual ICollection<Course> Courses { get; set; }
 
-        public ICollection<Recommendation> Recommendation { get; set; }
+        public virtual ICollection<Recommendation> Recommendation { get; set; }
 
         [Required]
         public DateTime CreatedAt { get; set; }

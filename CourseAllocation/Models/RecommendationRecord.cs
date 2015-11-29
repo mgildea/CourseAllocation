@@ -13,8 +13,19 @@ namespace CourseAllocation.Models
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
 
-        public StudentPreference StudentPreference { get; set; }
+        [ForeignKey("Recommendation")]
+        public int Recommendation_ID { get; set; }
+        public virtual Recommendation Recommendation { get; set; }
 
-        public CourseSemester CourseSemester { get; set; }
+
+        [ForeignKey("StudentPreference")]
+        public int StudentPreference_ID { get; set; }
+        public virtual StudentPreference StudentPreference { get; set; }
+
+
+
+        [ForeignKey("CourseSemester")]
+        public int CourseSemester_ID { get; set; }
+        public virtual CourseSemester CourseSemester { get; set; }
     }
 }

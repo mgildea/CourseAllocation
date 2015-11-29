@@ -13,6 +13,8 @@ namespace CourseAllocation.Controllers
     [Authorize]
     public class AdminApiController : ApiController
     {
+
+
         [HttpGet]
         public IEnumerable<OptimizationViewModel> Optimizations()
         {
@@ -24,6 +26,37 @@ namespace CourseAllocation.Controllers
 
 
         [HttpGet]
+        public IEnumerable<OptimizationRecordViewModel> OptimizationStudentRecomendations(int Recomendation_ID, string GaTechId)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var recomendations = ctx.RecomendationRecords.Include(m => m.StudentPreference).Where(m => m.Recommendation_ID == Recomendation_ID && m.StudentPreference.GaTechId == GaTechId).ToList();
+
+                var Records = recomendations.Select(m => new OptimizationRecordViewModel(m)).ToList();
+
+                int prefId = recomendations.Select(m => m.StudentPreference_ID).Distinct().Single();
+
+                foreach (var course in ctx.StudentPreferences.Single(m => m.ID == prefId).Courses)
+                {
+                    if (!Records.Select(m => m.Number).Contains(course.Number))
+                    {
+                        Records.Add(new OptimizationRecordViewModel()
+                        {
+                            ID = course.ID,
+                            IsAssigned = false,
+                            Name = course.Name,
+                            Number = course.Number
+
+                        });
+                    }
+
+                }
+
+                return Records;
+            }
+        }
+
+        [HttpGet]
         public IEnumerable<CourseSemesterViewModel> OptimizationOfferings(int Recomendation_ID)
         {
             using (var ctx = new ApplicationDbContext())
@@ -31,12 +64,26 @@ namespace CourseAllocation.Controllers
                 var recomendation = ctx.Recommendations
                     .Include(m => m.CourseSemesters.Select(n => n.Course))
                     .Include(m => m.CourseSemesters.Select(n => n.Semester))
+                    .Include(m => m.Records)
                     .Single(m => m.ID == Recomendation_ID);
 
-                return recomendation
-                    .CourseSemesters.ToList().Select(m => new CourseSemesterViewModel(m));
+                var temp1 = recomendation
+                    .CourseSemesters.ToList();
+
+                var temp = temp1.Select(m => new CourseSemesterViewModel(m, m.Recommendation.Single(n => n.ID == Recomendation_ID).Records.Where(n => n.CourseSemester_ID == m.ID))).ToList();
+                return temp;
             }
         }
+
+        [HttpGet]
+        public IEnumerable<OptimizationStudentViewModel> OptimizationAssignedStudents(int Recomendation_ID, int CourseSemester_ID)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                return ctx.RecomendationRecords.Include(m => m.StudentPreference).Where(m => m.Recommendation_ID == Recomendation_ID && m.CourseSemester_ID == CourseSemester_ID).ToList().Select(m => new OptimizationStudentViewModel(m));
+            }
+        }
+
 
 
         [HttpGet]
@@ -45,8 +92,6 @@ namespace CourseAllocation.Controllers
             using (var ctx = new ApplicationDbContext())
             {
                 return ctx.StudentPreferences.Where(m => m.IsActive).Select(m => m.GaTechId).ToList();
-                //return ctx.StudentPreferences.OrderBy(m => m.GaTechId).Select(m => m.GaTechId).Distinct().ToList();
-
             }
         }
 
@@ -65,13 +110,13 @@ namespace CourseAllocation.Controllers
 
                 var viewmodels = ctx.Courses.Include(m => m.Prerequisites).ToList().Where(m => courseIds.Contains(m.ID)).Select(m => new CourseViewModel(m)).ToList();
 
-              //  var completed = ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true));
+                //  var completed = ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true));
 
 
-                foreach(var completed in ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true)))
+                foreach (var completed in ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true)))
                 {
                     var vm = viewmodels.SingleOrDefault(m => m.ID == completed.ID);
-                    if(vm != null)
+                    if (vm != null)
                     {
                         viewmodels.Remove(vm);
                     }
@@ -115,12 +160,12 @@ namespace CourseAllocation.Controllers
 
 
 
-               // ctx.CourseSemesters.Find(ID).IsActive = false;
-             
+                // ctx.CourseSemesters.Find(ID).IsActive = false;
+
                 ctx.SaveChanges();
             }
 
-                return true;
+            return true;
         }
 
 
@@ -129,7 +174,7 @@ namespace CourseAllocation.Controllers
         {
             using (var ctx = new ApplicationDbContext())
             {
-                if(courseSemester == null || courseSemester.Course == null || courseSemester.Semester == null ||
+                if (courseSemester == null || courseSemester.Course == null || courseSemester.Semester == null ||
                     ctx.CourseSemesters.Where(m => m.Course.ID == courseSemester.Course.ID && m.Semester.Type == courseSemester.Semester.Type && m.Semester.Year == courseSemester.Semester.Year && m.IsActive).Any())
                 {
                     //record already exists or data incomplete
@@ -145,9 +190,9 @@ namespace CourseAllocation.Controllers
                 return new CourseSemesterViewModel(courseSemester);
             }
 
-          
 
-   
+
+
         }
 
         [HttpGet]
@@ -193,7 +238,7 @@ namespace CourseAllocation.Controllers
                     return null;
                 }
 
-                if(course.Prerequisites != null)
+                if (course.Prerequisites != null)
                 {
                     var prereqIds = course.Prerequisites.Select(n => n.ID);
 
@@ -205,7 +250,7 @@ namespace CourseAllocation.Controllers
                 return new CourseViewModel(course);
             }
 
-            
+
         }
 
         [HttpPost]
@@ -228,7 +273,7 @@ namespace CourseAllocation.Controllers
 
                 return newSemesters.Select(m => new SemesterViewModel(m));
             }
-            
+
         }
 
         [HttpGet]

@@ -27,21 +27,30 @@ namespace CourseAllocation.ViewModels
 
         public SemesterType TypeValue { get; set; }
         public string Type { get; set; }
-        public int Year { get; set; }
+        public string Year { get; set; }
         public string Number { get; set; }
         public string Name { get; set; }
 
         public int StudentLimit { get; set; }
+
+        public int AssignedStudents { get; set; }
+
+        public CourseSemesterViewModel() { }
 
         public CourseSemesterViewModel(CourseSemester m)
         {
             ID = m.ID;
             TypeValue = m.Semester.Type;
             Type = m.Semester.Type.ToString();
-            Year = m.Semester.Year;
+            Year = m.Semester.Year.ToString();
             Number = m.Course.Number;
             Name = m.Course.Name;
             StudentLimit = m.StudentLimit;
+        }
+
+        public CourseSemesterViewModel(CourseSemester m, IEnumerable<RecommendationRecord> records) : this(m)
+        {
+            AssignedStudents = records.Count();
         }
         
     }

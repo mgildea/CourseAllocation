@@ -299,6 +299,10 @@
     <Compile Include="Migrations\201511260346260_Student.Designer.cs">
       <DependentUpon>201511260346260_Student.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201511271836287_recordsrequiredforeignkey.cs" />
+    <Compile Include="Migrations\201511271836287_recordsrequiredforeignkey.Designer.cs">
+      <DependentUpon>201511271836287_recordsrequiredforeignkey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\CompletedCourse.cs" />
@@ -596,6 +600,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201511260346260_Student.resx">
       <DependentUpon>201511260346260_Student.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511271836287_recordsrequiredforeignkey.resx">
+      <DependentUpon>201511271836287_recordsrequiredforeignkey.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="obj\Debug\CourseAllocation.Migrations.init.resources" />
   </ItemGroup>

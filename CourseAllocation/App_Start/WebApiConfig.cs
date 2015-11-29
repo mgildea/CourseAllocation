@@ -41,6 +41,21 @@ namespace CourseAllocation
 );
 
 
+            config.Routes.MapHttpRoute(
+name: "QueryOptimizationAssignedStudents",
+routeTemplate: "Api/OptimizationAssignedStudents/{Recomendation_ID}/{CourseSemester_ID}",
+defaults: new { controller = "AdminApi", action = "OptimizationAssignedStudents", Recomendation_ID = RouteParameter.Optional, CourseSemester_ID = RouteParameter.Optional }
+
+);
+
+            config.Routes.MapHttpRoute(
+name: "QueryOptimizationStudentRecomendations",
+routeTemplate: "Api/OptimizationStudentRecomendations/{Recomendation_ID}/{GaTechId}",
+defaults: new { controller = "AdminApi", action = "OptimizationStudentRecomendations", Recomendation_ID = RouteParameter.Optional, GaTechId = RouteParameter.Optional }
+
+);
+
+
 
             config.Routes.MapHttpRoute(
           name: "QueryCourseSemesters",

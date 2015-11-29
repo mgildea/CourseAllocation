@@ -40,7 +40,7 @@
 </ul>
 
 
-<div class="tab-content" >
+<div class="tab-content">
 
     <div class="tab-pane fade in active" id="semesters">
 
@@ -186,34 +186,56 @@
     </div>
 
     <div class="tab-pane fade" id="results">
-        <div class="row form-group">
-            <div class="col-md-3">
-                <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name} , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Optimization'"></select>
+       
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name + ' (' + item.MissingSeats +')'} , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Optimization', optionsAfterRender: Results.setOptimizationOptionStyling"></select>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <span data-bind="if : Results.SelectedOptimization()">
+                            <select class="form-control" data-bind="value: Results.SelectedOffering, options: Results.OfferingRecords(), optionsText: function(item) { return item.Type + ' ' + item.Year + ' - ' + item.Number + ' (' + item.AssignedStudents + '/' + item.StudentLimit + ')'} , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Offering', optionsAfterRender: Results.setOfferingOptionStyling"></select>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <span data-bind="if : Results.SelectedOffering()">
+                            <select class="form-control" data-bind="value: Results.SelectedStudent, options: Results.StudentRecords(), optionsText: function(item) { return item.GaTechId} , optionsValue: function(item) { return item.GaTechId }, optionsCaption: 'Select Student'"></select>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" data-bind="if: Results.SelectedStudent()">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Semester</th>
+                            <th class="text-center">Year</th>
+                            <th class="text-center">Number</th>
+                            <th class="text-center">Title</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: Results.RecommendationRecords()">
+
+                        <tr data-bind="css: { 'text-danger': !$data.IsAssigned }">
+                            <td class="text-center" data-bind="text: Type"></td>
+                            <td class="text-center" data-bind="text: Year"></td>
+                            <td class="text-center" data-bind="text: Number"></td>
+
+                            <td data-bind="text: Name"> </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <div class="col-md-3">
-                <span data-bind="if : Results.SelectedOptimization(), css:Results.OptimizationMissingSeatsCss">
-                    Total Missing Seats : <span data-bind="text: Results.OptimizationMissingSeats"></span>
-                </span>
-            </div>
         </div>
-
-        <div class="row form-group">
-            <div class="col-md-3">
-                <span data-bind="if : Results.SelectedOptimization()">
-                    <select class="form-control" data-bind="value: Results.SelectedOffering, options: Results.OfferingRecords(), optionsText: function(item) { return item.Type + ' ' + item.Year + ' - ' + item.Number} , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Offering'"></select>
-                </span>
-            </div>
-            <div class="col-md-3">
-
-                <span data-bind="if : Results.SelectedOffering(), css:Results.OptimizationMissingSeatsCss">
-                    Enrolled Students : <span data-bind="text: Results.CourseMissingSeats"></span> / <span data-bind="text: Results.CourseMissingSeats"></span>
-                </span>
-
-
-            </div>
-
-        </div>
+        <p class="text-danger">* Optimization Results will vary as student preferences and course offerings evolve.</p>
     </div>
 </div>
 
@@ -224,10 +246,10 @@
 
     function courseSemesterSort(left, right) {
         if (left.Year == right.Year) {
-            if (left.Type == right.TypeValue)
+            if (left.TypeValue == right.TypeValue)
                 return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
             else
-                return left.Type == right.TypeValue ? 0 : (left.TypeValue < right.TypeValue ? -1 : 1);
+                return left.TypeValue == right.TypeValue ? 0 : (left.TypeValue < right.TypeValue ? -1 : 1);
         }
         else
             return left.Year == right.Year ? 0 : (left.Year < right.Year ? -1 : 1);
@@ -239,17 +261,62 @@
 
         self.SelectedOffering = ko.observable('');
         self.SelectedOptimization = ko.observable('');
+        self.SelectedStudent = ko.observable('');
 
-        self.OptimizationMissingSeats = ko.observable('');
+        self.setOptimizationOptionStyling = function (option, item) {
+            if (typeof item === 'undefined')
+                return;
 
-        self.CourseMissingSeats = ko.observable('XX');
+            if (item.MissingSeats > 0)
+                ko.applyBindingsToNode(option, { css: { "text-danger": true } }, item);
+            else
+                ko.applyBindingsToNode(option, { css: { "text-success": true } }, item);
 
-        self.OptimizationMissingSeatsCss = ko.pureComputed(function () {
-            return this.OptimizationMissingSeats() > 0 ? "text-danger" : "text-success";
-        }, self);
+
+        }
+
+        self.setOfferingOptionStyling = function (option, item) {
+            if (typeof item === 'undefined')
+                return;
+
+            var target = item.StudentLimit * .1;
+
+            target = item.StudentLimit - target;
+
+            if (item.AssignedStudents >= target && item.AssignedStudents <= item.StudentLimit)
+                ko.applyBindingsToNode(option, { css: { "text-success": true } }, item);
+            else
+                ko.applyBindingsToNode(option, { css: { "text-danger": true } }, item);
+
+        }
 
         self._offeringRecords = ko.observableArray('');
         self._optimizationRecords = ko.observableArray('');
+        self._studentRecords = ko.observableArray('');
+        self._recommendationRecords = ko.observableArray('');
+
+
+        //self.RecommendationCss = ko.pureComputed(function() {
+        //    return this.IsAssigned ? "" : "text-danger";
+        //}, self);
+
+
+        self.RecommendationRecords = ko.computed(function () {
+            return self._recommendationRecords().sort(function (left, right) {
+                if (left.IsAssigned && !right.IsAssigned)
+                    return -1;
+                else if (!left.IsAssigned && right.IsAssigned)
+                    return 1;
+                else
+                    return courseSemesterSort(left, right);
+            });
+        });
+
+        self.StudentRecords = ko.computed(function () {
+            return self._studentRecords().sort(function (left, right) {
+                return (left.Name == right.Name) ? 0 : (left.Name > right.Name ? -1 : 1);
+            });
+        });
 
         self.OfferingRecords = ko.computed(function () {
             return self._offeringRecords().sort(function (left, right) {
@@ -265,17 +332,49 @@
         });
 
 
+        self.SelectedStudent.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self._recommendationRecords.removeAll();
+            }
+            else {
+                $.getJSON("/Api/OptimizationStudentRecomendations/" + self.SelectedOptimization() + "/" + self.SelectedStudent(), function (data) {
+                    self._recommendationRecords.removeAll();
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self._recommendationRecords.push(item);
+
+                    });
+                });
+                
+            }
+
+        });
+
+
+        self.SelectedOffering.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self._studentRecords.removeAll();
+            }
+            else {
+
+                $.getJSON("/Api/OptimizationAssignedStudents/" + self.SelectedOptimization() + "/" + self.SelectedOffering(), function (data) {
+                    self._studentRecords.removeAll();
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self._studentRecords.push(item);
+
+                    });
+                });
+            }
+
+        });
+
+
         self.SelectedOptimization.subscribe(function (newValue) {
             if (typeof newValue === 'undefined') {
                 self._offeringRecords.removeAll();
             }
             else {
-                ko.utils.arrayForEach(self._optimizationRecords(), function (item) {
-                    if (item.ID == self.SelectedOptimization()) {
-                        self.OptimizationMissingSeats(item.MissingSeats);
-                    }
-                });
-
 
                 $.getJSON("/Api/OptimizationOfferings/" + self.SelectedOptimization(), function (data) {
                     self._offeringRecords.removeAll();

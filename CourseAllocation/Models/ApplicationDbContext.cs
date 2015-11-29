@@ -62,6 +62,7 @@ namespace CourseAllocation.Models
         public DbSet<CompletedCourse> CompletedCourses { get; set; }
         
         public DbSet<Recommendation> Recommendations { get; set; }
+        public DbSet<RecommendationRecord> RecomendationRecords { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
