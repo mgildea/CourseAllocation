@@ -36,7 +36,19 @@ namespace CourseAllocation.Controllers
 
                 int prefId = recomendations.Select(m => m.StudentPreference_ID).Distinct().Single();
 
-                foreach (var course in ctx.StudentPreferences.Single(m => m.ID == prefId).Courses)
+
+                foreach (var course in ctx.CompletedCourses.Include(m => m.Course).Where(m => m.GaTechId == GaTechId))
+                {
+                    Records.Add(new OptimizationRecordViewModel()
+                    {
+                        ID = course.Course_ID,
+                        IsCompleted = true,
+                        Name = course.Course.Name,
+                        Number = course.Course.Number
+                    });
+                }
+
+                    foreach (var course in ctx.StudentPreferences.Single(m => m.ID == prefId).Courses)
                 {
                     if (!Records.Select(m => m.Number).Contains(course.Number))
                     {
@@ -51,6 +63,9 @@ namespace CourseAllocation.Controllers
                     }
 
                 }
+
+               
+
 
                 return Records;
             }
