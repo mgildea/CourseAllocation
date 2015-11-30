@@ -12,8 +12,8 @@ namespace CourseAllocation.Models
         public string GaTechId { get; set; }
 
 
-        public virtual IEnumerable<StudentPreference> StudentPreferences { get; set; }
+        public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
-        public virtual IEnumerable<CompletedCourse> CompletedCourses { get; set; }
+        public virtual ICollection<CompletedCourse> CompletedCourses { get; set; }
     }
 }
