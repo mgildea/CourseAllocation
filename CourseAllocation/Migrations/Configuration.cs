@@ -210,7 +210,10 @@ namespace CourseAllocation.Migrations
                 new Course { Number = "CS 8803 - 003", Name = "Special Topics: Reinforcement Learning", Units = 3 }
 
                 );
-
+            //context.courses.single(m => m.number == "cs 7641").prerequisitefor = context.courses.where(m => m.number == "cs 7646").tolist();
+            //context.courses.single(m => m.number == "cs 8803 - 002").prerequisitefor = context.courses.where(m => m.number == "cs 6210").tolist();
+            //context.courses.single(m => m.number == "cs 7637").prerequisitefor = context.courses.where(m => m.number == "cs 8803 - 001").tolist();
+            //context.Courses.Single(m => m.Number == "CS 6300").PrerequisiteFor = context.Courses.Where(m => m.Number == "CS 6440").ToList();
             context.SaveChanges();
 
             SetCPRConcentration(context);
