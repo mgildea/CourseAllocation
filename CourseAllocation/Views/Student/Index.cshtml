@@ -27,7 +27,42 @@
     </div>
 
     <div class="tab-pane fade" id="results">
-        results
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name } , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Optimization', optionsAfterRender: Results.setOptimizationOptionStyling"></select>
+                    </div>
+                </div>
+
+                
+            </div>
+            <div class="col-md-8" data-bind="if: Results.SelectedOptimization()">
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Semester</th>
+                            <th class="text-center">Year</th>
+                            <th class="text-center">Number</th>
+                            <th class="text-center">Title</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: Results.RecommendationRecords()">
+
+                        <tr data-bind="css: { 'text-danger': !$data.IsAssigned && !$data.IsCompleted }">
+                            <td class="text-center" data-bind="text: Type"></td>
+                            <td class="text-center" data-bind="text: Year"></td>
+                            <td class="text-center" data-bind="text: Number"></td>
+                            <td><span data-bind="text: Name"></span><span class="pull-right text-success" data-bind="if: IsCompleted">completed</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <p class="text-danger">* Optimization Results will vary as student preferences and course offerings evolve.</p>
     </div>
 
 </div>
@@ -35,14 +70,53 @@
 
 @Html.Partial("_StudentPreferences")
 
+@Html.Partial("_Results")
 
 
 <script type="text/javascript">
+
+
+    function courseSemesterSort(left, right) {
+        if (left.Year == right.Year) {
+            if (left.TypeValue == right.TypeValue)
+                return (left.Number == right.Number) ? 0 : (left.Number < right.Number ? -1 : 1);
+            else
+                return left.TypeValue == right.TypeValue ? 0 : (left.TypeValue < right.TypeValue ? -1 : 1);
+        }
+        else
+            return left.Year == right.Year ? 0 : (left.Year < right.Year ? -1 : 1);
+    }
+
+
     function ViewModel() {
         var self = this;
 
         self.StudentPreferences =  new StudentPreferenceViewModel();
         self.StudentPreferences.GaTechId('@Model.UserName');
+
+        self.Results = new ResultsViewModel();
+        self.Results.SelectedStudent('@Model.UserName');
+        self.Results.Query();
+
+
+
+        self.Results.SelectedOptimization.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self.Results._recommendationRecords.removeAll();
+            }
+            else {
+                $.getJSON("/Api/OptimizationStudentRecomendations/" + self.Results.SelectedOptimization() + "/" + self.Results.SelectedStudent(), function (data) {
+                    self.Results._recommendationRecords.removeAll();
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self.Results._recommendationRecords.push(item);
+
+                    });
+                });
+
+            }
+
+        });
     }
 
 

@@ -228,11 +228,36 @@ namespace CourseAllocation.Migrations
             }
 
 
-            for(int i = 1; i <= 600; i++)
+          //  var allCourses = context.Courses.Include(m => m.Prerequisites).ToList();
+
+            for (int i = 1; i <= 600; i++)
             {
+                //var courses = allCourses.OrderBy(m => Guid.NewGuid()).Take(12).ToList();
+
+             
+
+                var courses  = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList();
+
+                List<Course> preference = new List<Course>();
+
+                foreach (var course in courses)
+                {
+                    if (!preference.Select(m => m.ID).Contains(course.ID))
+                        preference.Add(course);
+
+   
+                    foreach (var prereq in course.Prerequisites)
+                    {
+                        if (!preference.Select(m => m.ID).Contains(prereq.ID))
+                            preference.Add(prereq);
+                        
+                    }
+                }
+
+
                 context.StudentPreferences.AddOrUpdate(
-                    m => m.GaTechId,
-                    new StudentPreference { GaTechId = "Student" + i, IsActive = true, Courses = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList()}
+                    m => new { m.GaTechId, m.IsActive },
+                    new StudentPreference { GaTechId = "Student" + i, IsActive = true, Courses = preference }
                     );
 
             }

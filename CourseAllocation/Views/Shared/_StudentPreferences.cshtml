@@ -74,12 +74,10 @@
                         success: function (data) {
                             alert("Preferences Successfully saved!");
 
-                            //if (data !== null)
-                            //    self._records.push(data);
-
                         },
                         error: function (XMLHttpRequest, textStatus, errorThrown) {
-                            alert("Error Saving Preferences.")
+                            alert("Error saving preferences. " +  XMLHttpRequest.responseJSON.Message);
+
                         },
                         complete: function (data) {
    

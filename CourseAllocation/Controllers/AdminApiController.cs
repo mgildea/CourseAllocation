@@ -7,6 +7,7 @@ using System.Web.Http;
 using CourseAllocation.Models;
 using System.Data.Entity;
 using CourseAllocation.ViewModels;
+using System.Web.Http.ModelBinding;
 
 namespace CourseAllocation.Controllers
 {
@@ -48,7 +49,7 @@ namespace CourseAllocation.Controllers
                     });
                 }
 
-                    foreach (var course in ctx.StudentPreferences.Single(m => m.ID == prefId).Courses)
+                foreach (var course in ctx.StudentPreferences.Single(m => m.ID == prefId).Courses)
                 {
                     if (!Records.Select(m => m.Number).Contains(course.Number))
                     {
@@ -64,7 +65,7 @@ namespace CourseAllocation.Controllers
 
                 }
 
-               
+
 
 
                 return Records;
@@ -145,8 +146,9 @@ namespace CourseAllocation.Controllers
         }
 
         [HttpPost]
-        public bool StudentPreference(StudentPreference studentPreference)
+        public HttpResponseMessage StudentPreference(StudentPreference studentPreference)
         {
+
             using (var ctx = new ApplicationDbContext())
             {
                 ctx.StudentPreferences.Where(m => m.GaTechId == studentPreference.GaTechId && m.IsActive).ToList().ForEach(m => m.IsActive = false);
@@ -157,12 +159,49 @@ namespace CourseAllocation.Controllers
 
                 studentPreference.Courses = ctx.Courses.Where(m => ids.Contains(m.ID) && !completed.Contains(m.ID)).ToList();
 
+
+                foreach (var course in studentPreference.Courses)
+                {
+                    foreach (var prereq in ctx.Courses.Single(m => m.ID == course.ID).Prerequisites)
+                    {
+                        if (!studentPreference.Courses.Select(m => m.ID).Contains(prereq.ID))
+                        {
+                            return Request.CreateErrorResponse(HttpStatusCode.Conflict, String.Format("Missing prerequisite course {0} for {1}", prereq.Number, course.Number));
+                           // ModelState.AddModelError("", String.Format("Missing prerequisite course {0} for {1}", prereq.Number, course.Number));
+                        }
+                    }
+                }
+
+
+                //if (!ModelState.IsValid)
+                //{
+
+                //    foreach (ModelState modelState in ModelState.Values)
+                //    {
+                //        foreach (ModelError error in modelState.Errors)
+                //        {
+                //            return Request.CreateErrorResponse(HttpStatusCode.Conflict, error.ErrorMessage);
+
+                //        }
+                //    }
+
+
+                //}
+
+
+
                 ctx.StudentPreferences.Add(studentPreference);
 
                 ctx.SaveChanges();
+
+
+                return Request.CreateResponse(HttpStatusCode.OK);
+
+
+
             }
 
-            return true;
+
         }
 
         [HttpPost]

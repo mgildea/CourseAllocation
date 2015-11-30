@@ -1,0 +1,156 @@
+﻿<script type="text/javascript">
+    function ResultsViewModel() {
+        var self = this;
+
+        self.SelectedOffering = ko.observable('');
+        self.SelectedOptimization = ko.observable('');
+        self.SelectedStudent = ko.observable('');
+
+        self.setOptimizationOptionStyling = function (option, item) {
+            if (typeof item === 'undefined')
+                return;
+
+            if (item.MissingSeats > 0)
+                ko.applyBindingsToNode(option, { css: { "text-danger": true } }, item);
+            else
+                ko.applyBindingsToNode(option, { css: { "text-success": true } }, item);
+
+
+        }
+
+        self.setOfferingOptionStyling = function (option, item) {
+            if (typeof item === 'undefined')
+                return;
+
+            var target = item.StudentLimit * .1;
+
+            target = item.StudentLimit - target;
+
+            if (item.AssignedStudents >= target && item.AssignedStudents <= item.StudentLimit)
+                ko.applyBindingsToNode(option, { css: { "text-success": true } }, item);
+            else
+                ko.applyBindingsToNode(option, { css: { "text-danger": true } }, item);
+
+        }
+
+        self._offeringRecords = ko.observableArray('');
+        self._optimizationRecords = ko.observableArray('');
+        self._studentRecords = ko.observableArray('');
+        self._recommendationRecords = ko.observableArray('');
+
+
+        //self.RecommendationCss = ko.pureComputed(function() {
+        //    return this.IsAssigned ? "" : "text-danger";
+        //}, self);
+
+
+        self.RecommendationRecords = ko.computed(function () {
+            return self._recommendationRecords().sort(function (left, right) {
+                if (left.IsAssigned && !right.IsAssigned)
+                    return -1;
+                else if (!left.IsAssigned && right.IsAssigned)
+                    return 1;
+                else
+                    return courseSemesterSort(left, right);
+            });
+        });
+
+        self.StudentRecords = ko.computed(function () {
+            return self._studentRecords().sort(function (left, right) {
+                return (left.GaTechId == right.GaTechId) ? 0 : (left.GaTechId > right.GaTechId ? -1 : 1);
+            });
+        });
+
+        self.OfferingRecords = ko.computed(function () {
+            return self._offeringRecords().sort(function (left, right) {
+                return courseSemesterSort(left, right);
+
+            });
+        });
+
+        self.OptimizationRecords = ko.computed(function () {
+            return self._optimizationRecords().sort(function (left, right) {
+                return (left.Name == right.Name) ? 0 : (left.Name > right.Name ? -1 : 1);
+            });
+        });
+
+
+        self.SelectedStudent.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self._recommendationRecords.removeAll();
+            }
+            else {
+                $.getJSON("/Api/OptimizationStudentRecomendations/" + self.SelectedOptimization() + "/" + self.SelectedStudent(), function (data) {
+                    self._recommendationRecords.removeAll();
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self._recommendationRecords.push(item);
+
+                    });
+                });
+
+            }
+
+        });
+
+
+        self.SelectedOffering.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self._studentRecords.removeAll();
+            }
+            else {
+
+                $.getJSON("/Api/OptimizationAssignedStudents/" + self.SelectedOptimization() + "/" + self.SelectedOffering(), function (data) {
+                    self._studentRecords.removeAll();
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self._studentRecords.push(item);
+
+                    });
+                });
+            }
+
+        });
+
+
+        self.SelectedOptimization.subscribe(function (newValue) {
+            if (typeof newValue === 'undefined') {
+                self._offeringRecords.removeAll();
+            }
+            else {
+
+                $.getJSON("/Api/OptimizationOfferings/" + self.SelectedOptimization(), function (data) {
+                    self._offeringRecords.removeAll();
+
+
+                    ko.utils.arrayForEach(data, function (item) {
+                        self._offeringRecords.push(item);
+
+                    });
+                });
+            }
+
+
+        });
+
+
+        self.Query = function () {
+            $.getJSON("/Api/Optimizations", function (data) {
+                self._optimizationRecords.removeAll();
+
+
+                ko.utils.arrayForEach(data, function (item) {
+                    self._optimizationRecords.push(item);
+
+                });
+            });
+        };
+
+
+    }
+
+
+
+
+
+</script>
