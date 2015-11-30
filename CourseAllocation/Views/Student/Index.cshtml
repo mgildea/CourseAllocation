@@ -6,6 +6,29 @@
 <h2 class="underline">My Course Preferences</h2>
 
 
+<button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-target="#optimizeModal">
+    Optimize
+</button>
+
+
+<!-- Modal -->
+<div class="modal fade" id="optimizeModal" tabindex="-1" role="dialog" aria-labelledby="optimizeModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="optimizeModalLabel">Enter a name to help identify this run</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="form-control" placeholder="Run Name" data-bind="value: RunName" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bind="click: Optimize" class="btn btn-primary">Run Optimization</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <ul class="nav nav-tabs" role="tablist">
     <li class="active pull-right"><a data-target="#preferences" data-toggle="tab">Preferences</a></li>
     <li class="pull-right"><a data-target="#results" data-toggle="tab">Results</a></li>
@@ -32,7 +55,7 @@
             <div class="col-md-4">
                 <div class="row form-group">
                     <div class="col-md-12">
-                        <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name } , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Optimization', optionsAfterRender: Results.setOptimizationOptionStyling"></select>
+                        <select class="form-control" data-bind="value: Results.SelectedOptimization, options: Results.OptimizationRecords(), optionsText: function(item) { return item.Name } , optionsValue: function(item) { return item.ID }, optionsCaption: 'Select Optimization'"></select>
                     </div>
                 </div>
 
@@ -99,6 +122,30 @@
         self.Results.Query();
 
 
+        self.RunName = ko.observable('');
+
+        self.Optimize = function () {
+            SPIN();
+            $('#optimizeModal').modal('hide');
+            $.ajax({
+                url: "/Api/Optimizer/" + self.RunName(),
+                method: "POST",
+
+                success: function (data) {
+                    //alert("the optimization was succesfully run");
+                    $('#admintabs a[href="#results"]').tab('show');
+                    self.Results.Query();
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("An error occured during optimization");
+                },
+                complete: function (data) {
+                    self.RunName('');
+                    SPIN();
+                }
+            });
+        }
 
         self.Results.SelectedOptimization.subscribe(function (newValue) {
             if (typeof newValue === 'undefined') {
