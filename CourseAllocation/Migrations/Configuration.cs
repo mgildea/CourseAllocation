@@ -188,32 +188,43 @@ namespace CourseAllocation.Migrations
 
             context.UserName = user.UserName;
 
+
+       
+
             context.Courses.AddOrUpdate(
                 m => m.Number,
                 new Course { Number = "CS 6476", Name = "Computer Vision", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 6035", Name = "Introduction to Information Security", Units = 3 },
-                new Course { Number = "CS 6210", Name = "Advanced Operating Systems", Units = 3, IsFoundational = true },
+               
                 new Course { Number = "CSE 6220", Name = "Intro to High - Performance Computing", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 6250", Name = "Computer Networks", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 6290", Name = "High Performance Computer Architecture", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 6300", Name = "Software Development Process", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 6310", Name = "Software Architecture and Design", Units = 3, IsFoundational = true },
-                new Course { Number = "CS 6440", Name = "Intro to Health Informatics", Units = 3 },
                 new Course { Number = "CS 6460", Name = "Educational Technology", Units = 3 },
                 new Course { Number = "CS 6475", Name = "Computational Photograph", Units = 3 },
                 new Course { Number = "CS 6505", Name = "Computability, Complexity and Algorithms", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 7637", Name = "Knowledge - Based Artificial Intelligence: Cognitive Systems", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 7641", Name = "Machine Learning", Units = 3, IsFoundational = true },
-                new Course { Number = "CS 7646", Name = "Machine Learning for Trading", Units = 3 },
-                new Course { Number = "CS 8803 - 001", Name = "Artificial Intelligence for Robotics", Units = 3 },
-                new Course { Number = "CS 8803 - 002", Name = "Introduction to Operating Systems", Units = 3, IsFoundational = true },
+                 new Course { Number = "CS 8803 - 002", Name = "Introduction to Operating Systems", Units = 3, IsFoundational = true },
                 new Course { Number = "CS 8803 - 003", Name = "Special Topics: Reinforcement Learning", Units = 3 }
-
+                 
                 );
             //context.courses.single(m => m.number == "cs 7641").prerequisitefor = context.courses.where(m => m.number == "cs 7646").tolist();
             //context.courses.single(m => m.number == "cs 8803 - 002").prerequisitefor = context.courses.where(m => m.number == "cs 6210").tolist();
             //context.courses.single(m => m.number == "cs 7637").prerequisitefor = context.courses.where(m => m.number == "cs 8803 - 001").tolist();
             //context.Courses.Single(m => m.Number == "CS 6300").PrerequisiteFor = context.Courses.Where(m => m.Number == "CS 6440").ToList();
+            context.SaveChanges();
+
+            context.Courses.AddOrUpdate(
+               m => m.Number,
+new Course { Number = "CS 6210", Name = "Advanced Operating Systems", Units = 3, IsFoundational = true, Prerequisites = context.Courses.Where(m => (new string[] { "CS 8803 - 002" }).Contains(m.Number)).ToList() },
+  new Course { Number = "CS 8803 - 001", Name = "Artificial Intelligence for Robotics", Units = 3, Prerequisites = context.Courses.Where(m => (new string[] { "CS 7637" }).Contains(m.Number)).ToList() },
+               new Course { Number = "CS 7646", Name = "Machine Learning for Trading", Units = 3, Prerequisites = context.Courses.Where(m => (new string[] { "CS 7641" }).Contains(m.Number)).ToList() },
+               new Course { Number = "CS 6440", Name = "Intro to Health Informatics", Units = 3, Prerequisites = context.Courses.Where(m => (new string[] { "CS 6300" }).Contains(m.Number)).ToList() }
+               
+                 );
+
             context.SaveChanges();
 
             SetCPRConcentration(context);
@@ -239,7 +250,7 @@ namespace CourseAllocation.Migrations
 
              
 
-                var courses  = context.Courses.OrderBy(m => Guid.NewGuid()).Take(12).ToList();
+                var courses  = context.Courses.Include(m => m.Prerequisites).OrderBy(m => Guid.NewGuid()).Take(12).ToList();
 
                 List<Course> preference = new List<Course>();
 
@@ -257,6 +268,11 @@ namespace CourseAllocation.Migrations
                     }
                 }
 
+     
+                context.Students.AddOrUpdate(
+                    m => m.GaTechId,
+                    new CourseAllocation.Models.Student { GaTechId = "Student" + i }
+                    );
 
                 context.StudentPreferences.AddOrUpdate(
                     m => new { m.GaTechId, m.IsActive },

@@ -189,6 +189,9 @@ namespace CourseAllocation.Controllers
                 //}
 
 
+                if (ctx.Students.SingleOrDefault(m => m.GaTechId == studentPreference.GaTechId) == null)
+                    ctx.Students.Add(new Student() { GaTechId = studentPreference.GaTechId });
+
 
                 ctx.StudentPreferences.Add(studentPreference);
 
