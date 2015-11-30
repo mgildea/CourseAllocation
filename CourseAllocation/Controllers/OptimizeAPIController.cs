@@ -93,59 +93,26 @@ namespace CourseAllocation.Controllers
                         {
                             if (students[i].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
                             {
-                                GRBLinExpr coursePrereqConst1 = new GRBLinExpr();
-                                GRBLinExpr coursePrereqConst2 = new GRBLinExpr();
+                                GRBLinExpr coursePrereqConst1 = 0.0;
+                                GRBLinExpr coursePrereqConst2 = 0.0;
 
                                 for (int k = 0; k < sems.Length; k++)
                                 {
-                                    if (crssems.Any(m => m.Course.ID == courses[j].ID && m.Semester.Type == sems[k].Type && m.Semester.Year == sems[k].Year))
-                                    {
+                                    //if (crssems.Any(m => m.Course.ID == courses[j].ID && m.Semester.Type == sems[k].Type && m.Semester.Year == sems[k].Year))
+                                    //{
                                         int prereqIndex = Array.IndexOf(courses, courses[j].Prerequisites.Single());
                                         if (prereqIndex >= 0)
                                         {
                                             coursePrereqConst1.AddTerm(k + 1, CourseAllocation[i, prereqIndex, k]);
                                             coursePrereqConst2.AddTerm(k, CourseAllocation[i, j, k]);
                                         }
-                                    }
+                                    //}
                                 }
 
                                 model.AddConstr(coursePrereqConst1, GRB.LESS_EQUAL, coursePrereqConst2, "PREREQ_Student" + i + "_Course+" + j + "_Prereq" + Array.IndexOf(courses, courses[j].Prerequisites.Single()));
                             }
                         }
                     }
-                    //for (int j = 0; j < courses.Length; j++)
-                    //{
-                    //    if (!completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
-                    //    {
-                    //        Course[] PreReq = courses[j].Prerequisites.ToArray();
-                    //        for (int p = 0; p < PreReq.Length; p++)
-                    //        {
-                    //            GRBLinExpr PreReqExp = 0.0;
-                    //            for (int k1 = 0; k1 < sems.Length - 1; k1++)
-                    //            {
-                    //                if (crssems.Any(m => m.Course.ID == PreReq[p].ID && m.Semester.Type == sems[k1].Type && m.Semester.Year == sems[k1].Year))
-                    //                {
-                    //                    int nextSem = k1;
-                    //                    for (int k = k1 + 1; k < sems.Length; k++)
-                    //                    {
-                    //                        if (crssems.Any(m => m.Course.ID == courses[j].ID && m.Semester.Type == sems[k].Type && m.Semester.Year == sems[k].Year))
-                    //                        {
-                    //                            nextSem = k;
-                    //                            break;
-                    //                        }
-                    //                    }
-                    //                    if (nextSem > k1)
-                    //                    {
-                    //                        int PreReqIndex = Array.IndexOf(courses, PreReq[p]);
-                    //                        PreReqExp.AddTerm(1.0, CourseAllocation[i, j, nextSem]);
-                    //                        PreReqExp.AddTerm(-1.0, CourseAllocation[i, PreReqIndex, k1]);
-                    //                    }
-                    //                }
-                    //            }
-                    //            model.AddConstr(PreReqExp, GRB.LESS_EQUAL, 0, "Student." + students[i].GaTechId + "_PreReq." + PreReq[p].Name + "_ForCourse." + courses[j].Name);
-                    //        }
-                    //    }
-                    //}
                 }
             
                 for (int k = 0; k < sems.Length; k++)
