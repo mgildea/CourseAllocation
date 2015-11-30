@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace CourseAllocation.Controllers
 {
-    [RequireHttps]
+//    [RequireHttps]
     public class HomeController : BaseController
     {
         public ActionResult Index()
