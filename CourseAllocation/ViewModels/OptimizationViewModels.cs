@@ -10,6 +10,10 @@ namespace CourseAllocation.ViewModels
     {
         public string GaTechId { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="m"></param>
         public OptimizationStudentViewModel(RecommendationRecord m)
         {
             GaTechId = m.StudentPreference.GaTechId;

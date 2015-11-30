@@ -5,6 +5,8 @@ using System.Web.Http;
 using CourseAllocation.Models;
 using System.Collections.Generic;
 using Gurobi;
+using System.Net.Http;
+using System.Net;
 
 namespace CourseAllocation.Controllers
 {
@@ -27,7 +29,7 @@ namespace CourseAllocation.Controllers
         /// <param name="RunName"></param>
         /// <returns></returns>
         [HttpPost]
-        public object Optimize(string RunName)
+        public HttpResponseMessage Optimize(string RunName)
         {
             using (var dbConn = new ApplicationDbContext())
             {
@@ -102,21 +104,29 @@ namespace CourseAllocation.Controllers
                         {
                             if (courses[j].Prerequisites.Any() && students[i].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
                             {
-                                GRBLinExpr coursePrereqConst1 = 0.0;
-                                GRBLinExpr coursePrereqConst2 = 0.0;
-                                if (!completed.Any(m => m.GaTechId == students[i].GaTechId && m.Course.ID == courses[j].Prerequisites.Single().ID))
+
+                                foreach (var prereq in courses[j].Prerequisites)
                                 {
-                                    for (int k = 0; k < sems.Length; k++)
+                                    int prereqIndex = Array.IndexOf(courses, prereq);
+                                    GRBLinExpr coursePrereqConst1 = 0.0;
+                                    GRBLinExpr coursePrereqConst2 = 0.0;
+                                    if (!completed.Any(m => m.GaTechId == students[i].GaTechId && m.Course.ID == prereq.ID))
                                     {
-                                        int prereqIndex = Array.IndexOf(courses, courses[j].Prerequisites.Single());
-                                        if (prereqIndex >= 0)
+                                      
+                                        for (int k = 0; k < sems.Length; k++)
                                         {
-                                            coursePrereqConst1.AddTerm(k + 1, CourseAllocation[i, prereqIndex, k]);
-                                            coursePrereqConst2.AddTerm(k, CourseAllocation[i, j, k]);
+                                           
+                                            if (prereqIndex >= 0)
+                                            {
+                                                coursePrereqConst1.AddTerm(k + 1, CourseAllocation[i, prereqIndex, k]);
+                                                coursePrereqConst2.AddTerm(k, CourseAllocation[i, j, k]);
+                                            }
                                         }
                                     }
+                                    model.AddConstr(coursePrereqConst1, GRB.LESS_EQUAL, coursePrereqConst2, "PREREQ_Student" + i + "_Course+" + j + "_Prereq" + prereqIndex);
+
                                 }
-                                model.AddConstr(coursePrereqConst1, GRB.LESS_EQUAL, coursePrereqConst2, "PREREQ_Student" + i + "_Course+" + j + "_Prereq" + Array.IndexOf(courses, courses[j].Prerequisites.Single()));
+
                             }
                         }
                     }
@@ -130,7 +140,7 @@ namespace CourseAllocation.Controllers
                         {
                             if (students[i].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[i].GaTechId && courses[j].ID == m.Course_ID))
                             {
-                                int SemsRemain = (students[i].Courses.Count - students[i].Student.CompletedCourses.Count)/2 + (students[i].Courses.Count - students[i].Student.CompletedCourses.Count)%2;
+                                int SemsRemain = (students[i].Courses.Count - students[i].Student.CompletedCourses.Count) / 2 + (students[i].Courses.Count - students[i].Student.CompletedCourses.Count) % 2;
                                 for (int n = i + 1; n < students.Length; n++)
                                 {
                                     if (students[n].Courses.Contains(courses[j]) && !completed.Any(m => m.GaTechId == students[n].GaTechId && courses[j].ID == m.Course_ID))
@@ -213,9 +223,11 @@ namespace CourseAllocation.Controllers
                     env.Dispose();
                 }
                 catch (Exception e)
-                { }
+                {
+                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An Error occured while running the optimization.");
+                }
             }
-            return null;
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
         /// <summary>

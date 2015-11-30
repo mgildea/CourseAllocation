@@ -16,6 +16,10 @@ namespace CourseAllocation.Controllers
     {
 
 
+        /// <summary>
+        /// Retrieve set of all optimizations in the application
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<OptimizationViewModel> Optimizations()
         {
@@ -26,6 +30,12 @@ namespace CourseAllocation.Controllers
         }
 
 
+        /// <summary>
+        /// Retrieves set of recomendations for a given student for a given optimization run
+        /// </summary>
+        /// <param name="Recomendation_ID"></param>
+        /// <param name="GaTechId"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<OptimizationRecordViewModel> OptimizationStudentRecomendations(int Recomendation_ID, string GaTechId)
         {
@@ -72,6 +82,11 @@ namespace CourseAllocation.Controllers
             }
         }
 
+        /// <summary>
+        /// returns set of all course offerings for a given optimization run
+        /// </summary>
+        /// <param name="Recomendation_ID"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<CourseSemesterViewModel> OptimizationOfferings(int Recomendation_ID)
         {
@@ -91,6 +106,12 @@ namespace CourseAllocation.Controllers
             }
         }
 
+        /// <summary>
+        /// returns set of assigned students for a given course offering for a given optimization run
+        /// </summary>
+        /// <param name="Recomendation_ID"></param>
+        /// <param name="CourseSemester_ID"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<OptimizationStudentViewModel> OptimizationAssignedStudents(int Recomendation_ID, int CourseSemester_ID)
         {
@@ -102,6 +123,10 @@ namespace CourseAllocation.Controllers
 
 
 
+        /// <summary>
+        /// Retrieves set of all students with active preferences in the system
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<string> Students()
         {
@@ -112,6 +137,11 @@ namespace CourseAllocation.Controllers
         }
 
 
+        /// <summary>
+        /// Retrieves the current set of preferences for a given student
+        /// </summary>
+        /// <param name="GaTechId"></param>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<CourseViewModel> StudentPreferences(string GaTechId)
         {
@@ -125,9 +155,6 @@ namespace CourseAllocation.Controllers
                 var courseIds = preference.Courses.Select(m => m.ID).ToArray();
 
                 var viewmodels = ctx.Courses.Include(m => m.Prerequisites).ToList().Where(m => courseIds.Contains(m.ID)).Select(m => new CourseViewModel(m)).ToList();
-
-                //  var completed = ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true));
-
 
                 foreach (var completed in ctx.CompletedCourses.Include(m => m.Course.Prerequisites).Where(m => m.GaTechId == GaTechId).ToList().Select(m => new CourseViewModel(m.Course, true)))
                 {
@@ -145,6 +172,11 @@ namespace CourseAllocation.Controllers
             }
         }
 
+        /// <summary>
+        /// Posts a new set of preferences for a given student and archives the previous set
+        /// </summary>
+        /// <param name="studentPreference"></param>
+        /// <returns></returns>
         [HttpPost]
         public HttpResponseMessage StudentPreference(StudentPreference studentPreference)
         {
@@ -164,29 +196,12 @@ namespace CourseAllocation.Controllers
                 {
                     foreach (var prereq in ctx.Courses.Single(m => m.ID == course.ID).Prerequisites)
                     {
-                        if (!studentPreference.Courses.Select(m => m.ID).Contains(prereq.ID))
+                        if (!studentPreference.Courses.Select(m => m.ID).Contains(prereq.ID) && !completed.Contains(prereq.ID))
                         {
                             return Request.CreateErrorResponse(HttpStatusCode.Conflict, String.Format("Missing prerequisite course {0} for {1}", prereq.Number, course.Number));
-                           // ModelState.AddModelError("", String.Format("Missing prerequisite course {0} for {1}", prereq.Number, course.Number));
-                        }
+                       }
                     }
                 }
-
-
-                //if (!ModelState.IsValid)
-                //{
-
-                //    foreach (ModelState modelState in ModelState.Values)
-                //    {
-                //        foreach (ModelError error in modelState.Errors)
-                //        {
-                //            return Request.CreateErrorResponse(HttpStatusCode.Conflict, error.ErrorMessage);
-
-                //        }
-                //    }
-
-
-                //}
 
 
                 if (ctx.Students.SingleOrDefault(m => m.GaTechId == studentPreference.GaTechId) == null)
@@ -199,33 +214,35 @@ namespace CourseAllocation.Controllers
 
 
                 return Request.CreateResponse(HttpStatusCode.OK);
-
-
-
             }
 
 
         }
 
+        /// <summary>
+        /// reomove a course offering from the schedule
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         [HttpPost]
-        public bool RemoveCourseSemester(int ID)
+        public HttpResponseMessage RemoveCourseSemester(int ID)
         {
             using (var ctx = new ApplicationDbContext())
             {
-
                 ctx.CourseSemesters.Include(m => m.Course).Include(m => m.Semester).Single(m => m.ID == ID).IsActive = false;
-
-
-
-                // ctx.CourseSemesters.Find(ID).IsActive = false;
 
                 ctx.SaveChanges();
             }
 
-            return true;
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
 
 
+        /// <summary>
+        /// Post a new course offering to the schedule
+        /// </summary>
+        /// <param name="courseSemester"></param>
+        /// <returns></returns>
         [HttpPost]
         public CourseSemesterViewModel CourseSemester(CourseSemester courseSemester)
         {
@@ -246,12 +263,12 @@ namespace CourseAllocation.Controllers
 
                 return new CourseSemesterViewModel(courseSemester);
             }
-
-
-
-
         }
 
+        /// <summary>
+        /// get full set of active course offerings
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<CourseSemesterViewModel> CourseSemesters()
         {
@@ -262,10 +279,13 @@ namespace CourseAllocation.Controllers
         }
 
 
+        /// <summary>
+        /// get full set of courses in the system
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<CourseViewModel> Courses()
         {
-
             using (var ctx = new ApplicationDbContext())
             {
                 return ctx.Courses.Include(m => m.Prerequisites).ToList().Select(m => new CourseViewModel(m));
@@ -273,6 +293,11 @@ namespace CourseAllocation.Controllers
         }
 
 
+        /// <summary>
+        /// get single course
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         [HttpGet]
         public CourseViewModel Course([FromUri] int ID)
         {
@@ -284,6 +309,11 @@ namespace CourseAllocation.Controllers
 
 
 
+        /// <summary>
+        /// Post a new course to the system
+        /// </summary>
+        /// <param name="course"></param>
+        /// <returns></returns>
         [HttpPost]
         public CourseViewModel Course(Course course)
         {
@@ -310,6 +340,10 @@ namespace CourseAllocation.Controllers
 
         }
 
+        /// <summary>
+        /// post a new academic year to the system
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public IEnumerable<SemesterViewModel> Year()
         {
@@ -333,6 +367,10 @@ namespace CourseAllocation.Controllers
 
         }
 
+        /// <summary>
+        /// get all semesters in the system
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IEnumerable<SemesterViewModel> Semesters()
         {
