@@ -1,4 +1,6 @@
 
+<p>The live project is hosted at http://6310.gatechprojects.com </p>
+
 <p>This is a C# .NET MVC application requiring Visual Studio for development purposes.</p>
 
 <p>To run this project create blank PrivateSettings.config and ConnectionStrings.config files in ~/CourseAllocation</p>
