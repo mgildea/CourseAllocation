@@ -27,7 +27,15 @@
                 <input type="text" class="form-control" placeholder="Run Name" data-bind="value: RunName" />
             </div>
             <div class="modal-footer">
-                <button type="button" data-bind="click: Optimize" class="btn btn-primary">Run Optimization</button>
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="text-danger text-left">* The optimization engine may take several minutes to run depending on the data being used.</p>
+
+                    </div>
+                    <div class="col-md-4">
+                        <button type="button" data-bind="click: Optimize" class="btn btn-primary">Run Optimization</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

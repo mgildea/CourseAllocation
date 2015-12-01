@@ -15,5 +15,10 @@ namespace CourseAllocation.Models
         public virtual ICollection<StudentPreference> StudentPreferences { get; set; }
 
         public virtual ICollection<CompletedCourse> CompletedCourses { get; set; }
+
+        public Student()
+        {
+            CompletedCourses = new List<CompletedCourse>();
+        }
     }
 }

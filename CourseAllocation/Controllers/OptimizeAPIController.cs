@@ -221,12 +221,12 @@ namespace CourseAllocation.Controllers
                     //Clean-Up
                     model.Dispose();
                     env.Dispose();
-                }
-                catch (Exception e)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An Error occured while running the optimization.");
-                }
             }
+                catch (Exception e)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, "An Error occured while running the optimization.");
+            }
+        }
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
