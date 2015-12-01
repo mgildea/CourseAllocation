@@ -123,7 +123,7 @@ namespace CourseAllocation.Controllers
                                             }
                                         }
                                     }
-                                    model.AddConstr(coursePrereqConst1, GRB.LESS_EQUAL, coursePrereqConst2, "PREREQ_Student" + i + "_Course+" + j + "_Prereq" + courses[prereqIndex].Number);
+                                    model.AddConstr(coursePrereqConst1, GRB.LESS_EQUAL, coursePrereqConst2, "PREREQ_Student" + i + "_Course+" + j + "_Prereq" + prereqIndex);
 
                                 }
 
