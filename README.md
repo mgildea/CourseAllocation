@@ -7,4 +7,4 @@
 <p>The Gurobi installation should reside at C:/gurobi650/ </p>
 
 
-<p>Must setup a free account with SendGrid at http://sendgrid.com and configure username and password in PrivateSettings.config </p>
+<p>Must setup a free account with SendGrid at http://sendgrid.com and configure username and password in PrivateSettings.(Build).config </p>
